@@ -47,14 +47,6 @@
     background-color:rgba(255,255,255,0.04); }
   select option { background:#0d1f3c; color:var(--cream); }
   textarea { resize:vertical; min-height:70px; }
-  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .route-block { background:rgba(255,255,255,0.02); border:1px solid rgba(201,168,76,0.1);
-    border-radius:3px; padding:16px; margin-bottom:6px; }
-  .route-head { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-  .dot-green { background:#1D9E75; } .dot-red { background:#D85A30; }
-  .route-name { font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--cream); opacity:0.7; }
-  .connector { text-align:center; color:rgba(201,168,76,0.3); font-size:14px; letter-spacing:3px; margin:2px 0; }
   .btn-complete { width:100%; padding:13px;
     background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold));
     background-size:200% 100%; background-position:100% 0; border:none; border-radius:2px;
@@ -64,32 +56,8 @@
   .btn-complete:hover:not(:disabled) { background-position:0 0; box-shadow:0 8px 24px rgba(201,168,76,0.3); transform:translateY(-1px); }
   .btn-complete:active { transform:translateY(0); }
   .btn-complete:disabled { opacity:0.35; cursor:not-allowed; }
-  .success { display:none; text-align:center; animation:fadeUp 0.5s ease both; }
-  .success.show { display:block; }
   .step { display:none; }
   .step.active { display:block; }
-  .check-circle { width:56px; height:56px; border-radius:50%; background:rgba(201,168,76,0.1);
-    border:1px solid rgba(201,168,76,0.3); margin:0 auto 16px;
-    display:flex; align-items:center; justify-content:center; }
-  .check-circle svg { width:24px; height:24px; stroke:var(--gold); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  .success-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:300; color:var(--cream); margin-bottom:6px; }
-  .success-sub { font-size:13px; color:var(--mist); font-weight:300; line-height:1.6; margin-bottom:4px; }
-  .summary-box { background:rgba(201,168,76,0.05); border:1px solid rgba(201,168,76,0.18);
-    border-radius:3px; padding:14px 16px; margin:18px 0; text-align:left; }
-  .srow { display:flex; justify-content:space-between; align-items:flex-start; padding:5px 0;
-    border-bottom:1px solid rgba(255,255,255,0.05); font-size:12px; gap:12px; }
-  .srow:last-child { border-bottom:none; }
-  .sk { color:var(--mist); font-weight:300; flex-shrink:0; }
-  .sv { color:var(--cream); font-weight:400; text-align:right; }
-  .btn-wa { width:100%; padding:13px; background:#25D366; color:#fff; border:none; border-radius:2px;
-    font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; margin-bottom:8px;
-    display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
-  .btn-wa:hover { opacity:0.9; }
-  .btn-copy { width:100%; padding:12px; background:transparent; border:1px solid rgba(201,168,76,0.3);
-    border-radius:2px; color:var(--gold); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500;
-    letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.2s; }
-  .btn-copy:hover { background:rgba(201,168,76,0.07); }
-  .flash { font-size:12px; color:var(--gold-light); margin-top:8px; min-height:18px; }
   .btn-back { background:none; border:none; color:var(--mist); font-size:11px; letter-spacing:0.1em;
     text-transform:uppercase; cursor:pointer; padding:0; margin-bottom:20px;
     display:inline-flex; align-items:center; gap:6px; }
@@ -160,17 +128,6 @@
   .time-status-label.free { color:#6dddb4; }
   .time-status-label.busy { color:#f0a060; }
 
-  /* DURATION */
-  .duration-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .dur-btn { background:rgba(255,255,255,0.03); border:1px solid rgba(143,163,188,0.15);
-    border-radius:3px; padding:14px 10px; cursor:pointer; text-align:center; transition:all 0.2s; }
-  .dur-btn:hover:not(.blocked) { border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.07); }
-  .dur-btn.selected { border-color:var(--gold); background:rgba(201,168,76,0.12); }
-  .dur-btn.blocked { opacity:0.3; cursor:not-allowed; }
-  .dur-btn-label { font-size:13px; color:var(--cream); font-weight:300; }
-  .dur-btn-price { font-size:12px; color:var(--gold); margin-top:3px; font-weight:500; }
-  .dur-btn-warn { font-size:9px; color:#f0a060; margin-top:3px; }
-
   /* PRICE BOX */
   .price-box { background:rgba(201,168,76,0.07); border:1px solid rgba(201,168,76,0.3);
     border-radius:3px; padding:18px; text-align:center; margin:20px 0 0; }
@@ -178,15 +135,69 @@
   .price-amount { font-family:'Cormorant Garamond',serif; font-size:40px; font-weight:300; color:var(--gold); }
   .price-sub { font-size:11px; color:var(--mist); margin-top:6px; line-height:1.5; }
 
-  /* STEP DOTS */
+  /* STEP DOTS — now 5 steps */
   .step-indicator { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:24px; }
   .step-dot { width:7px; height:7px; border-radius:50%; background:rgba(143,163,188,0.25); transition:all 0.3s; }
   .step-dot.active { background:var(--gold); transform:scale(1.2); }
   .step-dot.done { background:rgba(29,158,117,0.5); }
 
+  /* LOCATION FIELDS */
+  .route-block { background:rgba(255,255,255,0.02); border:1px solid rgba(201,168,76,0.1);
+    border-radius:3px; padding:16px; margin-bottom:6px; }
+  .route-head { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .dot-green { background:#1D9E75; } .dot-red { background:#D85A30; }
+  .route-name { font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--cream); opacity:0.7; }
+  .connector { text-align:center; color:rgba(201,168,76,0.3); font-size:14px; letter-spacing:3px; margin:2px 0; }
+  .loc-row { display:flex; gap:8px; align-items:flex-end; }
+  .loc-row input { flex:1; }
+  .btn-gps { background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.25); border-radius:2px;
+    color:var(--gold); font-size:18px; padding:10px 12px; cursor:pointer; transition:all 0.2s;
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .btn-gps:hover { background:rgba(201,168,76,0.18); }
+  .gps-note { font-size:10px; color:var(--mist); margin-top:4px; opacity:0.7; }
+
+  /* SUMMARY */
+  .success { display:none; text-align:center; animation:fadeUp 0.5s ease both; }
+  .success.show { display:block; }
+  .check-circle { width:56px; height:56px; border-radius:50%; background:rgba(201,168,76,0.1);
+    border:1px solid rgba(201,168,76,0.3); margin:0 auto 16px;
+    display:flex; align-items:center; justify-content:center; }
+  .check-circle svg { width:24px; height:24px; stroke:var(--gold); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .success-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:300; color:var(--cream); margin-bottom:6px; }
+  .success-sub { font-size:13px; color:var(--mist); font-weight:300; line-height:1.6; margin-bottom:4px; }
+  .summary-box { background:rgba(201,168,76,0.05); border:1px solid rgba(201,168,76,0.18);
+    border-radius:3px; padding:14px 16px; margin:18px 0; text-align:left; }
+  .srow { display:flex; justify-content:space-between; align-items:flex-start; padding:5px 0;
+    border-bottom:1px solid rgba(255,255,255,0.05); font-size:12px; gap:12px; }
+  .srow:last-child { border-bottom:none; }
+  .sk { color:var(--mist); font-weight:300; flex-shrink:0; }
+  .sv { color:var(--cream); font-weight:400; text-align:right; }
+  .btn-wa { width:100%; padding:13px; background:#25D366; color:#fff; border:none; border-radius:2px;
+    font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; margin-bottom:8px;
+    display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
+  .btn-wa:hover { opacity:0.9; }
+  .btn-ig { width:100%; padding:13px; border:none; border-radius:2px;
+    background:linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+    color:#fff; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
+  .btn-ig:hover { opacity:0.9; }
+  .flash { font-size:12px; color:var(--gold-light); margin-top:8px; min-height:18px; }
+
+  /* BUSY NOTICE */
+  .busy-notice { background:rgba(208,85,50,0.1); border:1px solid rgba(208,85,50,0.35);
+    border-radius:3px; padding:12px 14px; text-align:center; font-size:12px; color:#f0a060;
+    margin-top:8px; display:none; }
+  .busy-notice.show { display:block; }
+
+  /* END TIME info */
+  .end-time-info { background:rgba(29,158,117,0.07); border:1px solid rgba(29,158,117,0.25);
+    border-radius:3px; padding:10px 14px; font-size:12px; color:#6dddb4; text-align:center;
+    margin-top:8px; display:none; }
+  .end-time-info.show { display:block; }
+
   @media (max-width:480px) {
     .card { padding:36px 20px 30px; }
-    .row2 { grid-template-columns:1fr; }
     h1 { font-size:24px; }
     .time-spinner-val { font-size:24px; }
   }
@@ -215,6 +226,7 @@
     <div class="step-dot" id="sdot-2"></div>
     <div class="step-dot" id="sdot-3"></div>
     <div class="step-dot" id="sdot-4"></div>
+    <div class="step-dot" id="sdot-5"></div>
   </div>
 
   <!-- STEP 1: DATE -->
@@ -246,125 +258,146 @@
           </div>
         </div>
       </div>
-      <input type="hidden" id="f-date">
     </div>
-    <button class="btn-complete" id="btn-to-step2" disabled>Continue →</button>
+    <button class="btn-complete" id="btn-to-step2" disabled onclick="goToStep2()">Continue →</button>
   </div>
 
-  <!-- STEP 2: TIME -->
+  <!-- STEP 2: START TIME -->
   <div class="step" id="step-2">
     <button class="btn-back" onclick="goToStep(1)">← Back</button>
     <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
     <p class="section-label">Select Departure Time</p>
-    <p style="font-size:12px;color:var(--mist);text-align:center;" id="time-date-label"></p>
+    <p style="font-size:12px;color:var(--mist);text-align:center;" id="start-date-label"></p>
 
     <div class="time-picker-grid">
       <div class="time-spinner">
         <div class="time-spinner-label">Hour</div>
         <div class="time-spinner-box">
-          <button class="time-spinner-btn" onclick="changeTime('h',1)">▲</button>
-          <div class="time-spinner-val" id="tp-hour">09</div>
-          <button class="time-spinner-btn" onclick="changeTime('h',-1)">▼</button>
+          <button class="time-spinner-btn" onclick="changeStart('h',1)">▲</button>
+          <div class="time-spinner-val" id="sh-hour">09</div>
+          <button class="time-spinner-btn" onclick="changeStart('h',-1)">▼</button>
         </div>
       </div>
       <div class="time-sep">:</div>
       <div class="time-spinner">
         <div class="time-spinner-label">Min</div>
         <div class="time-spinner-box">
-          <button class="time-spinner-btn" onclick="changeTime('m',15)">▲</button>
-          <div class="time-spinner-val" id="tp-min">00</div>
-          <button class="time-spinner-btn" onclick="changeTime('m',-15)">▼</button>
+          <button class="time-spinner-btn" onclick="changeStart('m',1)">▲</button>
+          <div class="time-spinner-val" id="sh-min">00</div>
+          <button class="time-spinner-btn" onclick="changeStart('m',-1)">▼</button>
         </div>
       </div>
       <div class="time-status-box">
         <div class="time-spinner-label">Status</div>
-        <div class="time-status-icon" id="tp-icon">⛵</div>
-        <div class="time-status-label free" id="tp-status">Available</div>
+        <div class="time-status-icon" id="sh-icon">⛵</div>
+        <div class="time-status-label free" id="sh-status">Available</div>
       </div>
     </div>
 
-    <button class="btn-complete" id="btn-confirm-time" onclick="confirmTime()">Select This Time →</button>
+    <div class="busy-notice" id="busy-notice-start">
+      ⛈ This time is already booked. Please choose another.
+    </div>
+
+    <button class="btn-complete" id="btn-confirm-start" onclick="confirmStart()">Set Departure →</button>
   </div>
 
-  <!-- STEP 3: DURATION + PRICE -->
+  <!-- STEP 3: END TIME -->
   <div class="step" id="step-3">
     <button class="btn-back" onclick="goToStep(2)">← Back</button>
     <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
-    <p class="section-label">Select Duration</p>
-    <p style="font-size:12px;color:var(--mist);text-align:center;margin-bottom:16px;" id="dur-label"></p>
-    <div class="duration-grid" id="duration-grid"></div>
-    <div class="price-box" id="price-box" style="display:none">
-      <div class="price-label">Total Price</div>
-      <div class="price-amount" id="price-amount">€0</div>
-      <div class="price-sub" id="price-sub"></div>
+    <p class="section-label">Select End Time</p>
+    <p style="font-size:12px;color:var(--mist);text-align:center;" id="end-date-label"></p>
+
+    <div class="time-picker-grid">
+      <div class="time-spinner">
+        <div class="time-spinner-label">Hour</div>
+        <div class="time-spinner-box">
+          <button class="time-spinner-btn" onclick="changeEnd('h',1)">▲</button>
+          <div class="time-spinner-val" id="eh-hour">10</div>
+          <button class="time-spinner-btn" onclick="changeEnd('h',-1)">▼</button>
+        </div>
+      </div>
+      <div class="time-sep">:</div>
+      <div class="time-spinner">
+        <div class="time-spinner-label">Min</div>
+        <div class="time-spinner-box">
+          <button class="time-spinner-btn" onclick="changeEnd('m',1)">▲</button>
+          <div class="time-spinner-val" id="eh-min">00</div>
+          <button class="time-spinner-btn" onclick="changeEnd('m',-1)">▼</button>
+        </div>
+      </div>
+      <div class="time-status-box">
+        <div class="time-spinner-label">Status</div>
+        <div class="time-status-icon" id="eh-icon">⛵</div>
+        <div class="time-status-label free" id="eh-status">Available</div>
+      </div>
     </div>
-    <button class="btn-complete" id="btn-to-step4" disabled style="margin-top:16px">Continue →</button>
+
+    <div class="busy-notice" id="busy-notice-end">
+      ⛈ This end time overlaps with a booked period. Please choose an earlier time.
+    </div>
+
+    <div class="price-box" id="end-price-box" style="display:none">
+      <div class="price-label">Total Price</div>
+      <div class="price-amount" id="end-price-amount">€0</div>
+      <div class="price-sub" id="end-price-sub"></div>
+    </div>
+
+    <button class="btn-complete" id="btn-confirm-end" onclick="confirmEnd()">Continue →</button>
   </div>
 
-  <!-- STEP 4: DETAILS -->
+  <!-- STEP 4: LOCATIONS -->
   <div class="step" id="step-4">
     <button class="btn-back" onclick="goToStep(3)">← Back</button>
     <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
-    <p class="section-label">Passengers</p>
-    <div class="field">
-      <label>Number of passengers</label>
-      <select id="f-pax">
-        <option value="">Select...</option>
-        <option>1–2 people</option><option>3–5 people</option>
-        <option>6–8 people</option><option>9–12 people</option><option>13+ people</option>
-      </select>
-    </div>
-    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
     <p class="section-label">Route</p>
+
     <div class="route-block">
-      <div class="route-head"><span class="dot dot-green"></span><span class="route-name">Departure</span></div>
-      <div class="field" style="margin:0">
-        <label>Location</label>
+      <div class="route-head"><span class="dot dot-green"></span><span class="route-name">Departure Location</span></div>
+      <div class="loc-row">
         <input type="text" id="f-loc-start" placeholder="e.g. Budva marina" autocomplete="off">
+        <button class="btn-gps" onclick="getGPS('start')" title="Use my location">📍</button>
       </div>
+      <div class="gps-note" id="gps-note-start"></div>
     </div>
+
     <div class="connector">· · ·</div>
+
     <div class="route-block">
-      <div class="route-head"><span class="dot dot-red"></span><span class="route-name">Arrival / Return</span></div>
-      <div class="field" style="margin:0">
-        <label>Location</label>
+      <div class="route-head"><span class="dot dot-red"></span><span class="route-name">Arrival / Return Location</span></div>
+      <div class="loc-row">
         <input type="text" id="f-loc-end" placeholder="e.g. Kotor harbour" autocomplete="off">
+        <button class="btn-gps" onclick="getGPS('end')" title="Use my location">📍</button>
       </div>
+      <div class="gps-note" id="gps-note-end"></div>
     </div>
-    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
-    <p class="section-label">Contact</p>
-    <div class="row2">
-      <div class="field">
-        <label>WhatsApp number</label>
-        <input type="tel" id="f-wa" placeholder="+382 69 123 456">
-      </div>
-      <div class="field">
-        <label>Instagram (optional)</label>
-        <input type="text" id="f-ig" placeholder="@username">
-      </div>
-    </div>
-    <div class="field">
-      <label>Notes (optional)</label>
-      <textarea id="f-note" placeholder="Special requests, occasion (wedding, photoshoot...), questions..."></textarea>
-    </div>
-    <button class="btn-complete" onclick="submitForm()">Complete Booking</button>
+
+    <button class="btn-complete" onclick="goToSummary()">View Summary →</button>
   </div>
 
-  <!-- SUCCESS -->
-  <div class="success" id="success-view">
-    <div class="check-circle">
-      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-    </div>
-    <h2 class="success-title">All done!</h2>
-    <p class="success-sub">Send your booking details via WhatsApp<br>or copy for Instagram.</p>
+  <!-- STEP 5: SUMMARY + SEND -->
+  <div class="step" id="step-5">
+    <button class="btn-back" onclick="goToStep(4)">← Back</button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <p class="section-label">Booking Summary</p>
+
     <div class="summary-box" id="summary"></div>
-    <button class="btn-wa" onclick="sendWA()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Send via WhatsApp
-    </button>
-    <button class="btn-copy" onclick="copyText()">Copy text for Instagram</button>
+
+    <div style="margin-top:20px">
+      <button class="btn-wa" onclick="sendWA()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Send via WhatsApp
+      </button>
+      <button class="btn-ig" onclick="sendIG()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Send via Instagram DM
+      </button>
+    </div>
     <p class="flash" id="flash"></p>
   </div>
+
+  <!-- LEGACY SUCCESS (hidden, keeping for compat) -->
+  <div class="success" id="success-view" style="display:none!important"></div>
 </div>
 
 <script>
@@ -377,22 +410,38 @@ var calOpen = false, calYear, calMonth;
 var selectedDate = null;
 var busyDates = {};
 var calLoaded = false, calApiOk = false;
-var tpHour = 9, tpMin = 0;
-var selectedTimeMin = -1;
-var selectedDurationH = 0;
+
+// Start time picker
+var shHour = 9, shMin = 0;
+// End time picker
+var ehHour = 10, ehMin = 0;
+
+var selectedStartMin = -1;
+var selectedEndMin   = -1;
 var bookingText = '';
 
 // ─── STEPS ───────────────────────────────────────────────────
 function goToStep(n) {
-  for (var i = 1; i <= 4; i++) {
-    document.getElementById('step-' + i).classList.toggle('active', i === n);
+  for (var i = 1; i <= 5; i++) {
+    var el = document.getElementById('step-' + i);
+    if (el) el.classList.toggle('active', i === n);
     var dot = document.getElementById('sdot-' + i);
-    dot.classList.remove('active', 'done');
-    if (i < n) dot.classList.add('done');
-    else if (i === n) dot.classList.add('active');
+    if (dot) {
+      dot.classList.remove('active', 'done');
+      if (i < n) dot.classList.add('done');
+      else if (i === n) dot.classList.add('active');
+    }
   }
-  document.getElementById('success-view').classList.remove('show');
   window.scrollTo(0, 0);
+}
+
+function goToStep2() {
+  if (!selectedDate) return;
+  var p = selectedDate.split('-');
+  document.getElementById('start-date-label').textContent = p[2] + '/' + p[1] + '/' + p[0];
+  shHour = 9; shMin = 0;
+  updateStartPicker();
+  goToStep(2);
 }
 
 // ─── CALENDAR ────────────────────────────────────────────────
@@ -434,8 +483,8 @@ function isMinuteBusy(dk, min) {
   return parseRanges(dk).some(function(r) { return min >= r.start && min < r.end; });
 }
 
-function durationOverlaps(dk, startMin, durationH) {
-  var endMin = startMin + durationH * 60;
+// Check if the interval [startMin, endMin) overlaps any booked range
+function intervalOverlaps(dk, startMin, endMin) {
   return parseRanges(dk).some(function(r) { return startMin < r.end && endMin > r.start; });
 }
 
@@ -468,7 +517,7 @@ function loadCalendar() {
       console.warn('Calendar API failed:', err);
       calLoaded = true; calApiOk = false;
       document.getElementById('cal-loading').innerHTML =
-        '<span style="color:var(--mist);font-size:11px;">⚠️ Could not load availability.<br>Select a date and confirm via WhatsApp.</span>';
+        '<span style="color:var(--mist);font-size:11px;">Could not load availability.<br>Select a date and confirm via WhatsApp.</span>';
       setTimeout(function() {
         document.getElementById('cal-loading').style.display = 'none';
         document.getElementById('cal-body').style.display = 'block';
@@ -525,7 +574,6 @@ function renderCal() {
       (function(dateKey) {
         el.addEventListener('click', function() {
           selectedDate = dateKey;
-          document.getElementById('f-date').value = dateKey;
           var p = dateKey.split('-');
           var disp = document.getElementById('cal-display');
           disp.textContent = p[2] + '/' + p[1] + '/' + p[0];
@@ -542,121 +590,172 @@ function renderCal() {
   }
 }
 
-// ─── TIME PICKER ─────────────────────────────────────────────
-document.getElementById('btn-to-step2').addEventListener('click', function() {
-  if (!selectedDate) return;
-  var p = selectedDate.split('-');
-  document.getElementById('time-date-label').textContent = p[2] + '/' + p[1] + '/' + p[0];
-  tpHour = 9; tpMin = 0;
-  updateTimePicker();
-  goToStep(2);
-});
-
-function changeTime(part, dir) {
-  if (part === 'h') { tpHour = (tpHour + dir + 24) % 24; }
-  else { tpMin = ((tpMin + dir) + 60) % 60; }
-  updateTimePicker();
+// ─── START TIME PICKER ────────────────────────────────────────
+function changeStart(part, dir) {
+  if (part === 'h') { shHour = (shHour + dir + 24) % 24; }
+  else { shMin = ((shMin + dir) + 60) % 60; }
+  updateStartPicker();
 }
 
-function updateTimePicker() {
-  document.getElementById('tp-hour').textContent = String(tpHour).padStart(2, '0');
-  document.getElementById('tp-min').textContent  = String(tpMin).padStart(2, '0');
-  var totalMin = tpHour * 60 + tpMin;
+function updateStartPicker() {
+  document.getElementById('sh-hour').textContent = String(shHour).padStart(2, '0');
+  document.getElementById('sh-min').textContent  = String(shMin).padStart(2, '0');
+  var totalMin = shHour * 60 + shMin;
   var busy = selectedDate && isMinuteBusy(selectedDate, totalMin);
-  document.getElementById('tp-icon').textContent    = busy ? '⛈️' : '⛵';
-  document.getElementById('tp-status').textContent  = busy ? 'Not available' : 'Available';
-  document.getElementById('tp-status').className    = 'time-status-label ' + (busy ? 'busy' : 'free');
-  document.getElementById('btn-confirm-time').disabled = busy;
+  document.getElementById('sh-icon').textContent   = busy ? '⛈️' : '⛵';
+  document.getElementById('sh-status').textContent = busy ? 'Not available' : 'Available';
+  document.getElementById('sh-status').className   = 'time-status-label ' + (busy ? 'busy' : 'free');
+  document.getElementById('btn-confirm-start').disabled = busy;
+  var notice = document.getElementById('busy-notice-start');
+  notice.classList.toggle('show', !!busy);
 }
 
-function confirmTime() {
-  selectedTimeMin = tpHour * 60 + tpMin;
-  var tStr = String(tpHour).padStart(2,'0') + ':' + String(tpMin).padStart(2,'0');
+function confirmStart() {
+  selectedStartMin = shHour * 60 + shMin;
+  // End time starts at start + 1 min
+  var endTotalMin = selectedStartMin + 1;
+  ehHour = Math.floor(endTotalMin / 60) % 24;
+  ehMin  = endTotalMin % 60;
   var p = selectedDate.split('-');
-  document.getElementById('dur-label').textContent = p[2] + '/' + p[1] + '/' + p[0] + ' — departure ' + tStr;
-  buildDurationGrid();
+  var tStr = String(shHour).padStart(2,'0') + ':' + String(shMin).padStart(2,'0');
+  document.getElementById('end-date-label').textContent = p[2] + '/' + p[1] + '/' + p[0] + ' — departure ' + tStr;
+  updateEndPicker();
   goToStep(3);
 }
 
-// ─── DURATION ────────────────────────────────────────────────
-function getPriceForHours(h) {
-  if (h <= 0) return 0;
-  if (h === 1) return 400;
-  return 400 + (h - 1) * 200;
+// ─── END TIME PICKER ─────────────────────────────────────────
+function changeEnd(part, dir) {
+  if (part === 'h') { ehHour = (ehHour + dir + 24) % 24; }
+  else { ehMin = ((ehMin + dir) + 60) % 60; }
+  updateEndPicker();
 }
 
-function buildDurationGrid() {
-  var grid = document.getElementById('duration-grid');
-  grid.innerHTML = '';
-  selectedDurationH = 0;
-  document.getElementById('btn-to-step4').disabled = true;
-  document.getElementById('price-box').style.display = 'none';
+function calcPrice(durationMin) {
+  // durationMin = end - start in minutes
+  // Round up to full hours: 1h=€400, 2h=€600, 3h=€800 (+€200 each extra hour)
+  if (durationMin <= 0) return 0;
+  var hours = Math.ceil(durationMin / 60); // round up
+  if (hours < 1) hours = 1;
+  return 400 + (hours - 1) * 200;
+}
 
-  var options = [{h:1,label:'1 hour'},{h:2,label:'2 hours'},{h:3,label:'3 hours'},
-                 {h:4,label:'4 hours'},{h:5,label:'Half day (5h)'},{h:8,label:'Full day (8h)'}];
+function updateEndPicker() {
+  document.getElementById('eh-hour').textContent = String(ehHour).padStart(2, '0');
+  document.getElementById('eh-min').textContent  = String(ehMin).padStart(2, '0');
 
-  options.forEach(function(opt) {
-    var blocked = selectedDate && durationOverlaps(selectedDate, selectedTimeMin, opt.h);
-    var price = getPriceForHours(opt.h);
-    var btn = document.createElement('div');
-    btn.className = 'dur-btn' + (blocked ? ' blocked' : '');
-    btn.innerHTML = '<div class="dur-btn-label">' + opt.label + '</div>'
-      + '<div class="dur-btn-price">€' + price + '</div>'
-      + (blocked ? '<div class="dur-btn-warn">⛈ Overlaps booked time</div>' : '');
-    if (!blocked) {
-      (function(hours, pr) {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('.dur-btn').forEach(function(b) { b.classList.remove('selected'); });
-          btn.classList.add('selected');
-          selectedDurationH = hours;
-          var endMin = selectedTimeMin + hours * 60;
-          var tStr = String(Math.floor(selectedTimeMin/60)).padStart(2,'0') + ':' + String(selectedTimeMin%60).padStart(2,'0');
-          var eStr = String(Math.floor(endMin/60)%24).padStart(2,'0') + ':' + String(endMin%60).padStart(2,'0');
-          var p = selectedDate.split('-');
-          document.getElementById('price-amount').textContent = '€' + pr;
-          document.getElementById('price-sub').textContent = p[2]+'/'+p[1]+'/'+p[0] + ' · ' + tStr + ' – ' + eStr;
-          document.getElementById('price-box').style.display = 'block';
-          document.getElementById('btn-to-step4').disabled = false;
-        });
-      })(opt.h, price);
+  var endMin = ehHour * 60 + ehMin;
+  var startMin = selectedStartMin;
+
+  // End must be after start
+  var isBeforeStart = (endMin <= startMin);
+  // Check if range overlaps any busy period
+  var overlaps = !isBeforeStart && selectedDate && intervalOverlaps(selectedDate, startMin, endMin);
+
+  var isBad = isBeforeStart || overlaps;
+
+  var notice = document.getElementById('busy-notice-end');
+  var priceBox = document.getElementById('end-price-box');
+  var confirmBtn = document.getElementById('btn-confirm-end');
+
+  if (isBeforeStart) {
+    document.getElementById('eh-icon').textContent = '⏰';
+    document.getElementById('eh-status').textContent = 'Too early';
+    document.getElementById('eh-status').className = 'time-status-label busy';
+    notice.textContent = '⚠️ End time must be after departure time.';
+    notice.classList.add('show');
+    priceBox.style.display = 'none';
+    confirmBtn.disabled = true;
+    return;
+  }
+
+  if (overlaps) {
+    document.getElementById('eh-icon').textContent = '⛈️';
+    document.getElementById('eh-status').textContent = 'Overlaps booking';
+    document.getElementById('eh-status').className = 'time-status-label busy';
+    notice.textContent = '⛈ This end time overlaps with a booked period. Please choose an earlier time.';
+    notice.classList.add('show');
+    priceBox.style.display = 'none';
+    confirmBtn.disabled = true;
+    return;
+  }
+
+  // All good
+  document.getElementById('eh-icon').textContent = '⛵';
+  document.getElementById('eh-status').textContent = 'Available';
+  document.getElementById('eh-status').className = 'time-status-label free';
+  notice.classList.remove('show');
+
+  var durationMin = endMin - startMin;
+  var price = calcPrice(durationMin);
+  var hours = Math.ceil(durationMin / 60);
+
+  var p = selectedDate.split('-');
+  var sStr = String(Math.floor(startMin/60)).padStart(2,'0') + ':' + String(startMin%60).padStart(2,'0');
+  var eStr = String(ehHour).padStart(2,'0') + ':' + String(ehMin).padStart(2,'0');
+  var dStr = hours === 1 ? '1 hour' : hours + ' hours';
+
+  document.getElementById('end-price-amount').textContent = '€' + price;
+  document.getElementById('end-price-sub').textContent =
+    p[2]+'/'+p[1]+'/'+p[0] + ' · ' + sStr + ' – ' + eStr + ' (' + dStr + ')';
+  priceBox.style.display = 'block';
+  confirmBtn.disabled = false;
+}
+
+function confirmEnd() {
+  selectedEndMin = ehHour * 60 + ehMin;
+  goToStep(4);
+}
+
+// ─── LOCATIONS ───────────────────────────────────────────────
+function getGPS(which) {
+  if (!navigator.geolocation) {
+    var note = document.getElementById('gps-note-' + which);
+    note.textContent = 'Geolocation not supported on this device.';
+    return;
+  }
+  var note = document.getElementById('gps-note-' + which);
+  note.textContent = 'Getting location...';
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var lat = pos.coords.latitude.toFixed(5);
+      var lng = pos.coords.longitude.toFixed(5);
+      var coords = lat + ', ' + lng;
+      document.getElementById('f-loc-' + which).value = coords;
+      note.textContent = '📍 Location captured (' + lat + ', ' + lng + ')';
+    },
+    function(err) {
+      note.textContent = 'Could not get location. Please type it manually.';
     }
-    grid.appendChild(btn);
-  });
+  );
 }
 
-// ─── SUBMIT ──────────────────────────────────────────────────
-function submitForm() {
-  var pax      = document.getElementById('f-pax').value;
+// ─── SUMMARY ─────────────────────────────────────────────────
+function goToSummary() {
   var locStart = document.getElementById('f-loc-start').value.trim();
   var locEnd   = document.getElementById('f-loc-end').value.trim();
-  var wa       = document.getElementById('f-wa').value.trim();
-  var ig       = document.getElementById('f-ig').value.trim();
-  var note     = document.getElementById('f-note').value.trim();
-
-  if (!pax || !locStart || !locEnd || !wa) {
-    alert('Please fill in all required fields.');
+  if (!locStart || !locEnd) {
+    alert('Please enter both departure and arrival locations.');
     return;
   }
 
   var p = selectedDate.split('-');
   var dateStr = p[2] + '/' + p[1] + '/' + p[0];
-  var tStr = String(Math.floor(selectedTimeMin/60)).padStart(2,'0') + ':' + String(selectedTimeMin%60).padStart(2,'0');
-  var endMin = selectedTimeMin + selectedDurationH * 60;
-  var eStr = String(Math.floor(endMin/60)%24).padStart(2,'0') + ':' + String(endMin%60).padStart(2,'0');
-  var price = getPriceForHours(selectedDurationH);
+  var sStr = String(Math.floor(selectedStartMin/60)).padStart(2,'0') + ':' + String(selectedStartMin%60).padStart(2,'0');
+  var eStr = String(Math.floor(selectedEndMin/60)).padStart(2,'0')   + ':' + String(selectedEndMin%60).padStart(2,'0');
+  var durationMin = selectedEndMin - selectedStartMin;
+  var hours = Math.ceil(durationMin / 60);
+  var price = calcPrice(durationMin);
+  var dStr = hours === 1 ? '1 hour' : hours + ' hours';
 
   var rows = [
-    ['Date', dateStr],
-    ['Time', tStr + ' – ' + eStr],
-    ['Duration', selectedDurationH + (selectedDurationH === 1 ? ' hour' : ' hours')],
-    ['Price', '€' + price],
-    ['Passengers', pax],
-    ['From', locStart],
-    ['To', locEnd],
-    ['WhatsApp', wa]
+    ['Date',      dateStr],
+    ['Departure', sStr],
+    ['Return',    eStr],
+    ['Duration',  dStr + ' (billed)'],
+    ['Price',     '€' + price],
+    ['From',      locStart],
+    ['To',        locEnd],
   ];
-  if (ig) rows.push(['Instagram', ig]);
-  if (note) rows.push(['Notes', note]);
 
   var html = '';
   rows.forEach(function(r) {
@@ -666,19 +765,26 @@ function submitForm() {
 
   bookingText = 'BOAT BOOKING REQUEST\nLola Boat Rent Montenegro\n----------------------------\n';
   rows.forEach(function(r) { bookingText += r[0] + ': ' + r[1] + '\n'; });
-  bookingText += '----------------------------';
+  bookingText += '----------------------------\nBooked via just-book-it form';
 
-  for (var i = 1; i <= 4; i++) document.getElementById('step-' + i).classList.remove('active');
-  document.getElementById('success-view').classList.add('show');
+  goToStep(5);
 }
 
-function sendWA() { window.open('https://wa.me/?text=' + encodeURIComponent(bookingText), '_blank'); }
+function sendWA() {
+  window.open('https://wa.me/38269123456?text=' + encodeURIComponent(bookingText), '_blank');
+}
 
-function copyText() {
+function sendIG() {
+  // Copy text to clipboard first, then open Instagram
   navigator.clipboard.writeText(bookingText).then(function() {
-    var f = document.getElementById('flash');
-    f.textContent = 'Copied! Paste it into your Instagram chat.';
-    setTimeout(function() { f.textContent = ''; }, 3000);
+    document.getElementById('flash').textContent = '✓ Booking details copied! Paste in your Instagram message.';
+    setTimeout(function() {
+      window.open('https://www.instagram.com/direct/inbox/', '_blank');
+    }, 600);
+    setTimeout(function() { document.getElementById('flash').textContent = ''; }, 4000);
+  }).catch(function() {
+    // Fallback: just open Instagram
+    window.open('https://www.instagram.com/direct/inbox/', '_blank');
   });
 }
 </script>
