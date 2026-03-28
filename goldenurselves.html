@@ -239,6 +239,18 @@
   @keyframes wave { 0%,100% { height:4px; } 50% { height:14px; } }
   .music-bar-label { font-size:10px; color:var(--mist); letter-spacing:0.1em; text-transform:uppercase; }
 
+  /* BOOKING TYPE CARDS */
+  .type-card { background:rgba(255,255,255,0.03); border:1px solid rgba(143,163,188,0.2);
+    border-radius:4px; padding:20px 12px; text-align:center; cursor:pointer;
+    transition:all 0.2s; }
+  .type-card:hover { border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.06); }
+  .type-card.selected { border-color:var(--gold); background:rgba(201,168,76,0.12); }
+  .type-icon { font-size:32px; margin-bottom:10px; }
+  .type-title { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:400;
+    color:var(--cream); line-height:1.3; margin-bottom:8px; }
+  .type-price { font-size:13px; color:var(--gold); font-weight:500; }
+  .type-fuel { font-size:10px; color:var(--mist); font-weight:300; }
+
   @media (max-width:480px) {
     .card { padding:36px 20px 30px; }
     h1 { font-size:24px; }
@@ -294,15 +306,36 @@
   </div>
 
   <div class="step-indicator">
-    <div class="step-dot active" id="sdot-1"></div>
+    <div class="step-dot active" id="sdot-0"></div>
+    <div class="step-dot" id="sdot-1"></div>
     <div class="step-dot" id="sdot-2"></div>
     <div class="step-dot" id="sdot-3"></div>
     <div class="step-dot" id="sdot-4"></div>
     <div class="step-dot" id="sdot-5"></div>
+    <div class="step-dot" id="sdot-6"></div>
+  </div>
+
+  <!-- STEP 0: BOOKING TYPE -->
+  <div class="step active" id="step-0">
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <p class="section-label">What are you booking?</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+      <div class="type-card" id="type-wedding" onclick="selectType('wedding')">
+        <div class="type-icon">💍</div>
+        <div class="type-title">Wedding &amp;<br>Photoshoot</div>
+        <div class="type-price">from €400<br><span class="type-fuel">fuel included</span></div>
+      </div>
+      <div class="type-card" id="type-charter" onclick="selectType('charter')">
+        <div class="type-icon">⛵</div>
+        <div class="type-title">Private<br>Charter</div>
+        <div class="type-price">from €450<br><span class="type-fuel">+ fuel €50/h</span></div>
+      </div>
+    </div>
+    <button class="btn-complete" id="btn-to-step1" disabled onclick="goToStep(1)" style="margin-top:20px">Continue →</button>
   </div>
 
   <!-- STEP 1: DATE -->
-  <div class="step active" id="step-1">
+  <div class="step" id="step-1">
     <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
     <p class="section-label">Select a Date</p>
     <div class="field">
@@ -334,9 +367,34 @@
     <button class="btn-complete" id="btn-to-step2" disabled onclick="goToStep2()">Continue →</button>
   </div>
 
-  <!-- STEP 2: START TIME -->
+  <!-- STEP 2: PICKUP STATION -->
   <div class="step" id="step-2">
     <button class="btn-back" onclick="goToStep(1)">← Back</button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <p class="section-label">Pickup Location</p>
+    <p style="font-size:12px;color:var(--mist);text-align:center;margin-bottom:16px;">Where will you board Lola?</p>
+    <div class="field">
+      <select id="f-pickup" onchange="onPickupChange()">
+        <option value="">Select boarding station...</option>
+        <option value="Kotor Riva">Kotor Riva</option>
+        <option value="Kotor Park">Kotor Park</option>
+        <option value="Kotor Forza 1">Kotor Forza 1</option>
+        <option value="Kotor Forza 2">Kotor Forza 2</option>
+        <option value="Perast Centar">Perast Centar</option>
+        <option value="Adriatica">Adriatica</option>
+        <option value="Porto Montenegro">Porto Montenegro</option>
+        <option value="Tivat Kalimanj">Tivat Kalimanj</option>
+        <option value="Porto Novi">Porto Novi</option>
+        <option value="Herceg Novi">Herceg Novi</option>
+      </select>
+    </div>
+    <div class="busy-notice" id="transfer-info" style="background:rgba(29,158,117,0.08);border-color:rgba(29,158,117,0.3);color:#6dddb4;"></div>
+    <button class="btn-complete" id="btn-to-step3" disabled onclick="goToStep3()" style="margin-top:16px">Continue →</button>
+  </div>
+
+  <!-- STEP 3: START TIME -->
+  <div class="step" id="step-3">
+    <button class="btn-back" onclick="goToStep(2)">← Back</button>
     <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
     <p class="section-label">Select Departure Time</p>
     <p style="font-size:12px;color:var(--mist);text-align:center;" id="start-date-label"></p>
@@ -373,9 +431,9 @@
     <button class="btn-complete" id="btn-confirm-start" onclick="confirmStart()">Set Departure →</button>
   </div>
 
-  <!-- STEP 3: END TIME -->
-  <div class="step" id="step-3">
-    <button class="btn-back" onclick="goToStep(2)">← Back</button>
+  <!-- STEP 4: END TIME -->
+  <div class="step" id="step-4">
+    <button class="btn-back" onclick="goToStep(3)">← Back</button>
     <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
     <p class="section-label">Select End Time</p>
     <p style="font-size:12px;color:var(--mist);text-align:center;" id="end-date-label"></p>
@@ -418,38 +476,54 @@
     <button class="btn-complete" id="btn-confirm-end" onclick="confirmEnd()">Continue →</button>
   </div>
 
-  <!-- STEP 4: LOCATIONS -->
-  <div class="step" id="step-4">
-    <button class="btn-back" onclick="goToStep(3)">← Back</button>
+  <!-- STEP 5: LOCATIONS -->
+  <div class="step" id="step-5">
+    <button class="btn-back" onclick="goToStep(4)">← Back</button>
     <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
     <p class="section-label">Route</p>
 
     <div class="route-block">
       <div class="route-head"><span class="dot dot-green"></span><span class="route-name">Departure Location</span></div>
-      <div class="loc-row">
-        <input type="text" id="f-loc-start" placeholder="e.g. Budva marina" autocomplete="off">
-        <button class="btn-gps" onclick="getGPS('start')" title="Use my location">📍</button>
-      </div>
-      <div class="gps-note" id="gps-note-start"></div>
+      <select id="f-loc-start">
+        <option value="">Select departure...</option>
+        <option>Kotor Riva</option>
+        <option>Kotor Park</option>
+        <option>Kotor Forza 1</option>
+        <option>Kotor Forza 2</option>
+        <option>Perast Centar</option>
+        <option>Adriatica</option>
+        <option>Porto Montenegro</option>
+        <option>Tivat Kalimanj</option>
+        <option>Porto Novi</option>
+        <option>Herceg Novi</option>
+      </select>
     </div>
 
     <div class="connector">· · ·</div>
 
     <div class="route-block">
       <div class="route-head"><span class="dot dot-red"></span><span class="route-name">Arrival / Return Location</span></div>
-      <div class="loc-row">
-        <input type="text" id="f-loc-end" placeholder="e.g. Kotor harbour" autocomplete="off">
-        <button class="btn-gps" onclick="getGPS('end')" title="Use my location">📍</button>
-      </div>
-      <div class="gps-note" id="gps-note-end"></div>
+      <select id="f-loc-end">
+        <option value="">Select arrival...</option>
+        <option>Kotor Riva</option>
+        <option>Kotor Park</option>
+        <option>Kotor Forza 1</option>
+        <option>Kotor Forza 2</option>
+        <option>Perast Centar</option>
+        <option>Adriatica</option>
+        <option>Porto Montenegro</option>
+        <option>Tivat Kalimanj</option>
+        <option>Porto Novi</option>
+        <option>Herceg Novi</option>
+      </select>
     </div>
 
     <button class="btn-complete" onclick="goToSummary()">View Summary →</button>
   </div>
 
-  <!-- STEP 5: SUMMARY + SEND -->
-  <div class="step" id="step-5">
-    <button class="btn-back" onclick="goToStep(4)">← Back</button>
+  <!-- STEP 6: SUMMARY + SEND -->
+  <div class="step" id="step-6">
+    <button class="btn-back" onclick="goToStep(5)">← Back</button>
     <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
     <p class="section-label">Booking Summary</p>
 
@@ -564,9 +638,94 @@ var selectedStartMin = -1;
 var selectedEndMin   = -1;
 var bookingText = '';
 
+// ─── TRAVEL TIME MATRIX ──────────────────────────────────────
+// Speed: 5 knots in harbour zones (~1nm each end), 15 knots open water
+// Formula per leg: harbour_out(1nm/5kn=12min) + open(nm/15kn*60) + harbour_in(12min) + 3min buffer
+// 1 knot = 1 nautical mile/hour. Distances estimated from Bay of Kotor chart.
+//
+// Approximate open-water distances (nm) between stations:
+// Kotor cluster (Riva/Park/Forza1/Forza2) — separated by <0.3nm each, same harbour
+// Kotor ↔ Perast: ~5nm open water
+// Perast ↔ Adriatica: ~3.5nm
+// Adriatica ↔ Porto Montenegro: ~1.5nm
+// Porto Montenegro ↔ Tivat Kalimanj: ~1nm (same bay)
+// Tivat ↔ Porto Novi: ~4.5nm (through Verige strait)
+// Porto Novi ↔ Herceg Novi: ~3nm
+//
+// Within Kotor cluster: pure harbour 5kn, ~0.2-0.5nm = 2-6min + 3buf
+// For harbour-only legs (same cluster) no open water section.
+//
+// Final values = ceil(harbour_exit + open_water_travel + harbour_entry) + 3min buffer
+
+var STATIONS = ['Kotor Riva','Kotor Park','Kotor Forza 1','Kotor Forza 2','Perast Centar','Adriatica','Porto Montenegro','Tivat Kalimanj','Porto Novi','Herceg Novi'];
+
+// [from][to] in minutes. Symmetric.
+// Within Kotor: harbour only 5kn, ~0.3nm avg = 4min + 3buf = 7. Same station = 0.
+// Kotor↔Perast: 12(out)+20(5nm@15kn)+12(in)+3buf = 47 → round to 47
+// Kotor↔Adriatica: 12+34(8.5nm)+12+3 = 61 → 61
+// Kotor↔PM: 12+38(9.5nm)+12+3 = 65
+// Kotor↔TK: 12+40(10nm)+12+3 = 67
+// Kotor↔PN: 12+56(14nm)+12+3 = 83
+// Kotor↔HN: 12+68(17nm)+12+3 = 95
+// Perast↔Adriatica: 12+14(3.5nm)+12+3 = 41
+// Perast↔PM: 12+18(4.5nm)+12+3 = 45
+// Perast↔TK: 12+20(5nm)+12+3 = 47
+// Perast↔PN: 12+36(9nm)+12+3 = 63
+// Perast↔HN: 12+48(12nm)+12+3 = 75
+// Adriatica↔PM: 12+6(1.5nm)+12+3 = 33
+// Adriatica↔TK: 12+8(2nm)+12+3 = 35
+// Adriatica↔PN: 12+22(5.5nm)+12+3 = 49
+// Adriatica↔HN: 12+34(8.5nm)+12+3 = 61
+// PM↔TK: harbour only ~0.8nm = 10min+3buf = 13
+// PM↔PN: 12+18(4.5nm)+12+3 = 45
+// PM↔HN: 12+28(7nm)+12+3 = 55
+// TK↔PN: 12+18(4.5nm)+12+3 = 45
+// TK↔HN: 12+26(6.5nm)+12+3 = 53
+// PN↔HN: 12+12(3nm)+12+3 = 39
+
+var TRAVEL = [
+//   KR   KP  KF1  KF2  Per  Adr   PM   TK   PN   HN
+  [   0,   7,   7,   7,  47,  61,  65,  67,  83,  95],  // Kotor Riva
+  [   7,   0,   7,   7,  47,  61,  65,  67,  83,  95],  // Kotor Park
+  [   7,   7,   0,   7,  47,  61,  65,  67,  83,  95],  // Kotor Forza 1
+  [   7,   7,   7,   0,  47,  61,  65,  67,  83,  95],  // Kotor Forza 2
+  [  47,  47,  47,  47,   0,  41,  45,  47,  63,  75],  // Perast Centar
+  [  61,  61,  61,  61,  41,   0,  33,  35,  49,  61],  // Adriatica
+  [  65,  65,  65,  65,  45,  33,   0,  13,  45,  55],  // Porto Montenegro
+  [  67,  67,  67,  67,  47,  35,  13,   0,  45,  53],  // Tivat Kalimanj
+  [  83,  83,  83,  83,  63,  49,  45,  45,   0,  39],  // Porto Novi
+  [  95,  95,  95,  95,  75,  61,  55,  53,  39,   0],  // Herceg Novi
+];
+
+function stationIndex(name) {
+  return STATIONS.indexOf(name);
+}
+
+// Returns earliest possible start minute at pickupStation given previous tour ended at endStation at endMin
+// Returns 0 if no previous tour info
+function earliestStart(pickupStation, prevEndStation, prevEndMin) {
+  if (!pickupStation || !prevEndStation || prevEndMin < 0) return 0;
+  var fromIdx = stationIndex(prevEndStation);
+  var toIdx   = stationIndex(pickupStation);
+  if (fromIdx < 0 || toIdx < 0) return 0;
+  var travelMin = TRAVEL[fromIdx][toIdx];
+  return prevEndMin + travelMin;
+}
+
+var selectedPickup = '';
+var minStartMin = 0;
+var selectedBookingType = ''; // 'wedding' or 'charter'
+
+function selectType(type) {
+  selectedBookingType = type;
+  document.getElementById('type-wedding').classList.toggle('selected', type === 'wedding');
+  document.getElementById('type-charter').classList.toggle('selected', type === 'charter');
+  document.getElementById('btn-to-step1').disabled = false;
+}
+
 // ─── STEPS ───────────────────────────────────────────────────
 function goToStep(n) {
-  for (var i = 1; i <= 5; i++) {
+  for (var i = 0; i <= 6; i++) {
     var el = document.getElementById('step-' + i);
     if (el) el.classList.toggle('active', i === n);
     var dot = document.getElementById('sdot-' + i);
@@ -576,22 +735,102 @@ function goToStep(n) {
       else if (i === n) dot.classList.add('active');
     }
   }
-  setBg(n - 1);
+  setBg(Math.max(0, n - 1));
   window.scrollTo(0, 0);
 }
 
 function goToStep2() {
   if (!selectedDate) return;
+  startMusic();
+  goToStep(2);
+}
+
+function onPickupChange() {
+  var sel = document.getElementById('f-pickup');
+  selectedPickup = sel.value;
+  var btn = document.getElementById('btn-to-step3');
+  var info = document.getElementById('transfer-info');
+
+  if (!selectedPickup) { btn.disabled = true; info.style.display = 'none'; return; }
+
+  // Calculate earliest start based on last tour end
+  var prevEndStation = getLastTourEndStation();
+  var prevEndMin     = getLastTourEndMin();
+  minStartMin = earliestStart(selectedPickup, prevEndStation, prevEndMin);
+
+  if (minStartMin > 0 && prevEndStation && prevEndStation !== selectedPickup) {
+    var travelNeeded = minStartMin - prevEndMin;
+    var eH = String(Math.floor(minStartMin/60)).padStart(2,'0');
+    var eM = String(minStartMin%60).padStart(2,'0');
+    info.textContent = '⚓ Previous tour ends at ' + prevEndStation + '. Travel time: ~' + travelNeeded + ' min. Earliest departure: ' + eH + ':' + eM;
+    info.style.display = 'block';
+  } else {
+    info.style.display = 'none';
+  }
+
+  btn.disabled = false;
+}
+
+function goToStep3() {
+  if (!selectedPickup) return;
   var p = selectedDate.split('-');
   document.getElementById('start-date-label').textContent = p[2] + '/' + p[1] + '/' + p[0];
-  shHour = 9; shMin = 0;
+  // Set start time to earliest allowed (or 09:00 default)
+  var startMin = Math.max(minStartMin, 9 * 60);
+  // Advance past any busy period
+  while (isMinuteBusy(selectedDate, startMin) && startMin < 23 * 60) startMin++;
+  shHour = Math.floor(startMin / 60);
+  shMin  = startMin % 60;
   updateStartPicker();
-  startMusic(); // music starts here, fades in
-  goToStep(2);
+  goToStep(3);
+}
+
+// Parse last tour's end station and end time from Google Calendar descriptions
+function getLastTourEndStation() {
+  if (!selectedDate || !busyDates[selectedDate]) return null;
+  var ranges = parseRangesWithStation(selectedDate);
+  if (!ranges.length) return null;
+  // Find the range ending latest
+  var last = ranges.reduce(function(a,b){ return b.end > a.end ? b : a; });
+  return last.endStation || null;
+}
+
+function getLastTourEndMin() {
+  if (!selectedDate || !busyDates[selectedDate]) return -1;
+  var ranges = parseRangesWithStation(selectedDate);
+  if (!ranges.length) return -1;
+  var last = ranges.reduce(function(a,b){ return b.end > a.end ? b : a; });
+  return last.end;
+}
+
+// Extended parser that also extracts end station from description lines like "14:45-16:45 Herceg Novi"
+function parseRangesWithStation(dk) {
+  var ranges = [];
+  (busyDates[dk] || []).forEach(function(ev) {
+    (ev.label || '').split(/\n/).forEach(function(line) {
+      line = line.replace(/^[-\s]+/, '').trim();
+      var m = line.match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})\s*(.*)?/);
+      if (m) {
+        var endStationRaw = (m[5] || '').trim();
+        // Try to match to a known station
+        var endStation = null;
+        STATIONS.forEach(function(s) {
+          if (endStationRaw.toLowerCase().indexOf(s.toLowerCase().split(' ')[0]) >= 0) endStation = s;
+        });
+        ranges.push({
+          start: parseInt(m[1])*60 + parseInt(m[2]),
+          end:   parseInt(m[3])*60 + parseInt(m[4]),
+          endStation: endStation
+        });
+      }
+    });
+  });
+  return ranges;
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
 setBg(0);
+document.getElementById('step-0').classList.add('active');
 
 // ─── CALENDAR ────────────────────────────────────────────────
 function toggleCal() {
@@ -750,18 +989,34 @@ function updateStartPicker() {
   document.getElementById('sh-hour').textContent = String(shHour).padStart(2, '0');
   document.getElementById('sh-min').textContent  = String(shMin).padStart(2, '0');
   var totalMin = shHour * 60 + shMin;
-  var busy = selectedDate && isMinuteBusy(selectedDate, totalMin);
-  document.getElementById('sh-icon').textContent   = busy ? '⛈️' : '⛵';
-  document.getElementById('sh-status').textContent = busy ? 'Not available' : 'Available';
-  document.getElementById('sh-status').className   = 'time-status-label ' + (busy ? 'busy' : 'free');
-  document.getElementById('btn-confirm-start').disabled = busy;
-  var notice = document.getElementById('busy-notice-start');
-  notice.classList.toggle('show', !!busy);
+  var tooEarly = totalMin < minStartMin;
+  var busy = !tooEarly && selectedDate && isMinuteBusy(selectedDate, totalMin);
+  var blocked = tooEarly || busy;
+  if (tooEarly) {
+    var eH = String(Math.floor(minStartMin/60)).padStart(2,'0');
+    var eM = String(minStartMin%60).padStart(2,'0');
+    document.getElementById('sh-icon').textContent   = '⏰';
+    document.getElementById('sh-status').textContent = 'Too early';
+    document.getElementById('sh-status').className   = 'time-status-label busy';
+    document.getElementById('busy-notice-start').textContent = '⏰ Lola needs time to get here. Earliest: ' + eH + ':' + eM;
+    document.getElementById('busy-notice-start').classList.add('show');
+  } else if (busy) {
+    document.getElementById('sh-icon').textContent   = '⛈️';
+    document.getElementById('sh-status').textContent = 'Not available';
+    document.getElementById('sh-status').className   = 'time-status-label busy';
+    document.getElementById('busy-notice-start').textContent = '⛈ This time is already booked. Please choose another.';
+    document.getElementById('busy-notice-start').classList.add('show');
+  } else {
+    document.getElementById('sh-icon').textContent   = '⛵';
+    document.getElementById('sh-status').textContent = 'Available';
+    document.getElementById('sh-status').className   = 'time-status-label free';
+    document.getElementById('busy-notice-start').classList.remove('show');
+  }
+  document.getElementById('btn-confirm-start').disabled = blocked;
 }
 
 function confirmStart() {
   selectedStartMin = shHour * 60 + shMin;
-  // End time starts at start + 1 min
   var endTotalMin = selectedStartMin + 1;
   ehHour = Math.floor(endTotalMin / 60) % 24;
   ehMin  = endTotalMin % 60;
@@ -769,7 +1024,7 @@ function confirmStart() {
   var tStr = String(shHour).padStart(2,'0') + ':' + String(shMin).padStart(2,'0');
   document.getElementById('end-date-label').textContent = p[2] + '/' + p[1] + '/' + p[0] + ' — departure ' + tStr;
   updateEndPicker();
-  goToStep(3);
+  goToStep(4);
 }
 
 // ─── END TIME PICKER ─────────────────────────────────────────
@@ -780,12 +1035,24 @@ function changeEnd(part, dir) {
 }
 
 function calcPrice(durationMin) {
-  // durationMin = end - start in minutes
-  // Round up to full hours: 1h=€400, 2h=€600, 3h=€800 (+€200 each extra hour)
-  if (durationMin <= 0) return 0;
-  var hours = Math.ceil(durationMin / 60); // round up
+  if (durationMin <= 0) return { base: 0, fuel: 0, total: 0, label: '' };
+  var hours = Math.ceil(durationMin / 60);
   if (hours < 1) hours = 1;
-  return 400 + (hours - 1) * 200;
+
+  if (selectedBookingType === 'charter') {
+    // Charter: min 2h. 2h=450, 3h=550, 4h=600, 5h=700, 6h=800, 7h=900, 8h=1000
+    if (hours < 2) hours = 2;
+    var basePrices = {2:450, 3:550, 4:600, 5:700, 6:800, 7:900, 8:1000};
+    var base = basePrices[Math.min(hours, 8)] || (1000 + (hours - 8) * 100);
+    var fuel = hours * 50;
+    return { base: base, fuel: fuel, total: base + fuel,
+      label: '€' + base + ' + €' + fuel + ' fuel = €' + (base + fuel) };
+  } else {
+    // Wedding/photoshoot: 1h=400, 2h=600, fuel included
+    var base = 400 + (hours - 1) * 200;
+    return { base: base, fuel: 0, total: base,
+      label: '€' + base + ' (fuel included)' };
+  }
 }
 
 function updateEndPicker() {
@@ -835,24 +1102,25 @@ function updateEndPicker() {
   notice.classList.remove('show');
 
   var durationMin = endMin - startMin;
-  var price = calcPrice(durationMin);
+  var priceObj = calcPrice(durationMin);
   var hours = Math.ceil(durationMin / 60);
+  if (selectedBookingType === 'charter' && hours < 2) hours = 2;
 
   var p = selectedDate.split('-');
   var sStr = String(Math.floor(startMin/60)).padStart(2,'0') + ':' + String(startMin%60).padStart(2,'0');
   var eStr = String(ehHour).padStart(2,'0') + ':' + String(ehMin).padStart(2,'0');
   var dStr = hours === 1 ? '1 hour' : hours + ' hours';
 
-  document.getElementById('end-price-amount').textContent = '€' + price;
+  document.getElementById('end-price-amount').textContent = '€' + priceObj.total;
   document.getElementById('end-price-sub').textContent =
-    p[2]+'/'+p[1]+'/'+p[0] + ' · ' + sStr + ' – ' + eStr + ' (' + dStr + ')';
+    p[2]+'/'+p[1]+'/'+p[0] + ' · ' + sStr + ' – ' + eStr + ' (' + dStr + ')\n' + priceObj.label;
   priceBox.style.display = 'block';
   confirmBtn.disabled = false;
 }
 
 function confirmEnd() {
   selectedEndMin = ehHour * 60 + ehMin;
-  showAnim(function() { goToStep(4); });
+  showAnim(function() { goToStep(5); });
 }
 
 // ─── LOCATIONS ───────────────────────────────────────────────
@@ -880,10 +1148,10 @@ function getGPS(which) {
 
 // ─── SUMMARY ─────────────────────────────────────────────────
 function goToSummary() {
-  var locStart = document.getElementById('f-loc-start').value.trim();
-  var locEnd   = document.getElementById('f-loc-end').value.trim();
+  var locStart = document.getElementById('f-loc-start').value;
+  var locEnd   = document.getElementById('f-loc-end').value;
   if (!locStart || !locEnd) {
-    alert('Please enter both departure and arrival locations.');
+    alert('Please select both departure and arrival locations.');
     return;
   }
 
@@ -893,15 +1161,19 @@ function goToSummary() {
   var eStr = String(Math.floor(selectedEndMin/60)).padStart(2,'0')   + ':' + String(selectedEndMin%60).padStart(2,'0');
   var durationMin = selectedEndMin - selectedStartMin;
   var hours = Math.ceil(durationMin / 60);
-  var price = calcPrice(durationMin);
+  if (selectedBookingType === 'charter' && hours < 2) hours = 2;
+  var priceObj = calcPrice(durationMin);
   var dStr = hours === 1 ? '1 hour' : hours + ' hours';
+  var typeLabel = selectedBookingType === 'charter' ? 'Private Charter' : 'Wedding / Photoshoot';
 
   var rows = [
+    ['Type',      typeLabel],
     ['Date',      dateStr],
+    ['Pickup at', selectedPickup],
     ['Departure', sStr],
     ['Return',    eStr],
-    ['Duration',  dStr + ' (billed)'],
-    ['Price',     '€' + price],
+    ['Duration',  dStr],
+    ['Price',     priceObj.label],
     ['From',      locStart],
     ['To',        locEnd],
   ];
@@ -916,7 +1188,7 @@ function goToSummary() {
   rows.forEach(function(r) { bookingText += r[0] + ': ' + r[1] + '\n'; });
   bookingText += '----------------------------\nBooked via just-book-it form';
 
-  goToStep(5);
+  goToStep(6);
 }
 
 function sendWA() {
