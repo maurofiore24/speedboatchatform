@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boat Tour Booking – Lola Boat Rent Montenegro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0a1628; --deep: #0d1f3c; --gold: #c9a84c; --gold-light: #e8c97a;
+    --cream: #f5f0e8; --mist: #8fa3bc; --green: #1D9E75; --orange: #e07b30;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--navy); min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+  body::before { content: ''; position: fixed; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.12) 0%, transparent 60%);
+    pointer-events: none; }
+  .card { background: rgba(13,31,60,0.95); border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 4px; width: 100%; max-width: 520px; padding: 48px 40px 40px;
+    position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) both; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .corner { position:absolute; width:18px; height:18px; border-color:rgba(201,168,76,0.4); border-style:solid; }
+  .corner-tl { top:10px; left:10px; border-width:1px 0 0 1px; }
+  .corner-tr { top:10px; right:10px; border-width:1px 1px 0 0; }
+  .corner-bl { bottom:10px; left:10px; border-width:0 0 1px 1px; }
+  .corner-br { bottom:10px; right:10px; border-width:0 1px 1px 0; }
+  .logo-area { text-align:center; margin-bottom:28px; }
+  .boat-icon { margin-bottom:10px; }
+  h1 { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:var(--cream); letter-spacing:0.04em; }
+  h1 span { color:var(--gold); font-style:italic; }
+  .subtitle { margin-top:5px; font-size:11px; color:var(--mist); letter-spacing:0.14em; text-transform:uppercase; }
+  .divider { display:flex; align-items:center; gap:10px; margin:24px 0; }
+  .divider-line { flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.25),transparent); }
+  .divider-dot { width:3px; height:3px; border-radius:50%; background:var(--gold); opacity:0.5; }
+  .section-label { font-size:10px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; opacity:0.8; }
+  .field { margin-bottom:16px; }
+  label { display:block; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mist); margin-bottom:6px; }
+  input, select, textarea { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(143,163,188,0.2);
+    border-radius:2px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:300;
+    padding:10px 13px; outline:none; transition:border-color 0.2s,background 0.2s; -webkit-appearance:none; }
+  input:focus, select:focus, textarea:focus { border-color:rgba(201,168,76,0.5); background:rgba(201,168,76,0.04); }
+  select { cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c9a84c' opacity='.4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center; padding-right:34px;
+    background-color:rgba(255,255,255,0.04); }
+  select option { background:#0d1f3c; color:var(--cream); }
+  textarea { resize:vertical; min-height:70px; }
+  .btn-complete { width:100%; padding:13px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold));
+    background-size:200% 100%; background-position:100% 0; border:none; border-radius:2px;
+    color:var(--navy); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500;
+    letter-spacing:0.16em; text-transform:uppercase; cursor:pointer;
+    transition:background-position 0.4s,box-shadow 0.3s,transform 0.15s; margin-top:8px; }
+  .btn-complete:hover:not(:disabled) { background-position:0 0; box-shadow:0 8px 24px rgba(201,168,76,0.3); transform:translateY(-1px); }
+  .btn-complete:active { transform:translateY(0); }
+  .btn-complete:disabled { opacity:0.35; cursor:not-allowed; }
+  .step { display:none; }
+  .step.active { display:block; }
+  .btn-back { background:none; border:none; color:var(--mist); font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; cursor:pointer; padding:0; margin-bottom:20px;
+    display:inline-flex; align-items:center; gap:6px; }
+  .btn-back:hover { color:var(--gold); }
+
+  /* CALENDAR */
+  .cal-wrap { position:relative; }
+  .cal-input { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(143,163,188,0.2);
+    border-radius:2px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:300;
+    padding:10px 13px; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+    transition:border-color 0.2s; user-select:none; }
+  .cal-input:hover, .cal-input.open { border-color:rgba(201,168,76,0.5); background:rgba(201,168,76,0.04); }
+  .cal-input-text.placeholder { color:var(--mist); opacity:0.5; }
+  .cal-icon { opacity:0.4; }
+  .cal-dropdown { display:none; position:absolute; top:calc(100% + 6px); left:0; right:0;
+    background:#0d1f3c; border:1px solid rgba(201,168,76,0.25); border-radius:3px;
+    z-index:100; padding:14px; box-shadow:0 16px 40px rgba(0,0,0,0.5); }
+  .cal-dropdown.open { display:block; }
+  .cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .cal-nav-btn { background:transparent; border:none; color:var(--mist); cursor:pointer; font-size:18px;
+    padding:2px 8px; border-radius:2px; transition:color 0.15s; }
+  .cal-nav-btn:hover { color:var(--gold); }
+  .cal-month-label { font-size:13px; font-weight:500; color:var(--cream); letter-spacing:0.06em; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+  .cal-dow { font-size:10px; font-weight:500; color:var(--mist); text-align:center; padding:4px 0; letter-spacing:0.06em; opacity:0.6; }
+  .cal-day { aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:300; color:var(--cream); border-radius:2px; cursor:pointer;
+    position:relative; transition:background 0.15s; }
+  .cal-day.empty { cursor:default; }
+  .cal-day.past { opacity:0.2; cursor:not-allowed; pointer-events:none; }
+  .cal-day.today { border:1px solid rgba(201,168,76,0.4); }
+  .cal-day.selected { background:var(--gold) !important; color:var(--navy) !important; font-weight:500; }
+  .cal-day.free { background:rgba(29,158,117,0.2); color:#6dddb4; }
+  .cal-day.busy { background:rgba(224,123,48,0.2); color:#f0a060; }
+  .cal-day.free:hover { background:rgba(29,158,117,0.35); }
+  .cal-day.busy:hover { background:rgba(224,123,48,0.35); }
+  .cal-day:hover:not(.empty):not(.free):not(.busy):not(.past) { background:rgba(201,168,76,0.12); }
+  .cal-tooltip { display:none; position:absolute; bottom:calc(100% + 8px); left:50%;
+    transform:translateX(-50%); background:#060e1c; border:1px solid rgba(224,123,48,0.45);
+    border-radius:3px; padding:8px 11px; font-size:11px; color:var(--cream); white-space:nowrap;
+    z-index:300; min-width:150px; pointer-events:none; }
+  .cal-tooltip::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:5px solid transparent; border-top-color:rgba(224,123,48,0.45); }
+  .cal-day.busy:hover .cal-tooltip { display:block; }
+  .cal-tooltip-title { font-weight:500; color:#f0a060; margin-bottom:4px; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; }
+  .cal-tooltip-event { padding:2px 0; color:var(--cream); font-size:11px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .cal-tooltip-event:last-child { border-bottom:none; }
+  .cal-legend { display:flex; gap:16px; margin-top:12px; justify-content:center; }
+  .cal-legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--mist); }
+  .cal-legend-dot { width:8px; height:8px; border-radius:50%; }
+  .cal-loading { text-align:center; padding:24px 0; font-size:12px; color:var(--mist); }
+
+  /* TIME PICKER */
+  .time-picker-grid { display:flex; gap:16px; align-items:flex-end; justify-content:center; margin:20px 0; }
+  .time-spinner { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .time-spinner-label { font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--mist); }
+  .time-spinner-box { background:rgba(255,255,255,0.04); border:1px solid rgba(143,163,188,0.2);
+    border-radius:3px; display:flex; flex-direction:column; align-items:center; overflow:hidden; width:72px; }
+  .time-spinner-btn { background:none; border:none; color:var(--mist); cursor:pointer; font-size:18px;
+    width:100%; padding:8px 0; line-height:1; transition:color 0.15s,background 0.15s; }
+  .time-spinner-btn:hover { color:var(--gold); background:rgba(201,168,76,0.08); }
+  .time-spinner-val { font-size:28px; font-weight:300; color:var(--cream); padding:10px 0;
+    min-width:50px; text-align:center; letter-spacing:0.02em; }
+  .time-sep { font-size:28px; color:var(--gold); opacity:0.4; padding-bottom:18px; font-weight:300; }
+  .time-status-box { display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:4px; }
+  .time-status-icon { font-size:40px; line-height:1; }
+  .time-status-label { font-size:9px; letter-spacing:0.12em; text-transform:uppercase; margin-top:2px; }
+  .time-status-label.free { color:#6dddb4; }
+  .time-status-label.busy { color:#f0a060; }
+
+  /* PRICE BOX */
+  .price-box { background:rgba(201,168,76,0.07); border:1px solid rgba(201,168,76,0.3);
+    border-radius:3px; padding:18px; text-align:center; margin:20px 0 0; }
+  .price-label { font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--mist); margin-bottom:8px; }
+  .price-amount { font-family:'Cormorant Garamond',serif; font-size:40px; font-weight:300; color:var(--gold); }
+  .price-sub { font-size:11px; color:var(--mist); margin-top:6px; line-height:1.5; }
+
+  /* STEP DOTS — now 5 steps */
+  .step-indicator { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:24px; }
+  .step-dot { width:7px; height:7px; border-radius:50%; background:rgba(143,163,188,0.25); transition:all 0.3s; }
+  .step-dot.active { background:var(--gold); transform:scale(1.2); }
+  .step-dot.done { background:rgba(29,158,117,0.5); }
+
+  /* LOCATION FIELDS */
+  .route-block { background:rgba(255,255,255,0.02); border:1px solid rgba(201,168,76,0.1);
+    border-radius:3px; padding:16px; margin-bottom:6px; }
+  .route-head { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .dot-green { background:#1D9E75; } .dot-red { background:#D85A30; }
+  .route-name { font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--cream); opacity:0.7; }
+  .connector { text-align:center; color:rgba(201,168,76,0.3); font-size:14px; letter-spacing:3px; margin:2px 0; }
+  .loc-row { display:flex; gap:8px; align-items:flex-end; }
+  .loc-row input { flex:1; }
+  .btn-gps { background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.25); border-radius:2px;
+    color:var(--gold); font-size:18px; padding:10px 12px; cursor:pointer; transition:all 0.2s;
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .btn-gps:hover { background:rgba(201,168,76,0.18); }
+  .gps-note { font-size:10px; color:var(--mist); margin-top:4px; opacity:0.7; }
+
+  /* SUMMARY */
+  .success { display:none; text-align:center; animation:fadeUp 0.5s ease both; }
+  .success.show { display:block; }
+  .check-circle { width:56px; height:56px; border-radius:50%; background:rgba(201,168,76,0.1);
+    border:1px solid rgba(201,168,76,0.3); margin:0 auto 16px;
+    display:flex; align-items:center; justify-content:center; }
+  .check-circle svg { width:24px; height:24px; stroke:var(--gold); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .success-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:300; color:var(--cream); margin-bottom:6px; }
+  .success-sub { font-size:13px; color:var(--mist); font-weight:300; line-height:1.6; margin-bottom:4px; }
+  .summary-box { background:rgba(201,168,76,0.05); border:1px solid rgba(201,168,76,0.18);
+    border-radius:3px; padding:14px 16px; margin:18px 0; text-align:left; }
+  .srow { display:flex; justify-content:space-between; align-items:flex-start; padding:5px 0;
+    border-bottom:1px solid rgba(255,255,255,0.05); font-size:12px; gap:12px; }
+  .srow:last-child { border-bottom:none; }
+  .sk { color:var(--mist); font-weight:300; flex-shrink:0; }
+  .sv { color:var(--cream); font-weight:400; text-align:right; }
+  .btn-wa { width:100%; padding:13px; background:#25D366; color:#fff; border:none; border-radius:2px;
+    font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; margin-bottom:8px;
+    display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
+  .btn-wa:hover { opacity:0.9; }
+  .btn-ig { width:100%; padding:13px; border:none; border-radius:2px;
+    background:linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+    color:#fff; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
+  .btn-ig:hover { opacity:0.9; }
+  .flash { font-size:12px; color:var(--gold-light); margin-top:8px; min-height:18px; }
+
+  /* BUSY NOTICE */
+  .busy-notice { background:rgba(208,85,50,0.1); border:1px solid rgba(208,85,50,0.35);
+    border-radius:3px; padding:12px 14px; text-align:center; font-size:12px; color:#f0a060;
+    margin-top:8px; display:none; }
+  .busy-notice.show { display:block; }
+
+  /* END TIME info */
+  .end-time-info { background:rgba(29,158,117,0.07); border:1px solid rgba(29,158,117,0.25);
+    border-radius:3px; padding:10px 14px; font-size:12px; color:#6dddb4; text-align:center;
+    margin-top:8px; display:none; }
+  .end-time-info.show { display:block; }
+
+  @media (max-width:480px) {
+    .card { padding:36px 20px 30px; }
+    h1 { font-size:24px; }
+    .time-spinner-val { font-size:24px; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+
+  <div class="logo-area">
+    <div class="boat-icon">
+      <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+        <path d="M6 32 C10 28 14 26 24 26 C34 26 38 28 42 32" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M10 32 L8 38 H40 L38 32" stroke="#c9a84c" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M24 26 L24 16 L32 22" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M24 16 L18 20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>Boat Tour <span>Booking</span></h1>
+    <p class="subtitle">Lola Boat Rent Montenegro</p>
+  </div>
+
+  <div class="step-indicator">
+    <div class="step-dot active" id="sdot-1"></div>
+    <div class="step-dot" id="sdot-2"></div>
+    <div class="step-dot" id="sdot-3"></div>
+    <div class="step-dot" id="sdot-4"></div>
+    <div class="step-dot" id="sdot-5"></div>
+  </div>
+
+  <!-- STEP 1: DATE -->
+  <div class="step active" id="step-1">
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <p class="section-label">Select a Date</p>
+    <div class="field">
+      <div class="cal-wrap" id="cal-wrap">
+        <div class="cal-input" id="cal-input" onclick="toggleCal()">
+          <span class="cal-input-text placeholder" id="cal-display">Select date...</span>
+          <svg class="cal-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div class="cal-dropdown" id="cal-dropdown">
+          <div class="cal-loading" id="cal-loading">Loading availability...</div>
+          <div id="cal-body" style="display:none">
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="calNav(-1)">&#8249;</button>
+              <span class="cal-month-label" id="cal-month-label"></span>
+              <button class="cal-nav-btn" onclick="calNav(1)">&#8250;</button>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="cal-legend">
+              <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(29,158,117,0.6)"></div>Available</div>
+              <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(224,123,48,0.6)"></div>Partially booked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-complete" id="btn-to-step2" disabled onclick="goToStep2()">Continue →</button>
+  </div>
+
+  <!-- STEP 2: START TIME -->
+  <div class="step" id="step-2">
+    <button class="btn-back" onclick="goToStep(1)">← Back</button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <p class="section-label">Select Departure Time</p>
+    <p style="font-size:12px;color:var(--mist);text-align:center;" id="start-date-label"></p>
+
+    <div class="time-picker-grid">
+      <div class="time-spinner">
+        <div class="time-spinner-label">Hour</div>
+        <div class="time-spinner-box">
+          <button class="time-spinner-btn" onclick="changeStart('h',1)">▲</button>
+          <div class="time-spinner-val" id="sh-hour">09</div>
+          <button class="time-spinner-btn" onclick="changeStart('h',-1)">▼</button>
+        </div>
+      </div>
+      <div class="time-sep">:</div>
+      <div class="time-spinner">
+        <div class="time-spinner-label">Min</div>
+        <div class="time-spinner-box">
+          <button class="time-spinner-btn" onclick="changeStart('m',1)">▲</button>
+          <div class="time-spinner-val" id="sh-min">00</div>
+          <button class="time-spinner-btn" onclick="changeStart('m',-1)">▼</button>
+        </div>
+      </div>
+      <div class="time-status-box">
+        <div class="time-spinner-label">Status</div>
+        <div class="time-status-icon" id="sh-icon">⛵</div>
+        <div class="time-status-label free" id="sh-status">Available</div>
+      </div>
+    </div>
+
+    <div class="busy-notice" id="busy-notice-start">
+      ⛈ This time is already booked. Please choose another.
+    </div>
+
+    <button class="btn-complete" id="btn-confirm-start" onclick="confirmStart()">Set Departure →</button>
+  </div>
+
+  <!-- STEP 3: END TIME -->
+  <div class="step" id="step-3">
+    <button class="btn-back" onclick="goToStep(2)">← Back</button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <p class="section-label">Select End Time</p>
+    <p style="font-size:12px;color:var(--mist);text-align:center;" id="end-date-label"></p>
+
+    <div class="time-picker-grid">
+      <div class="time-spinner">
+        <div class="time-spinner-label">Hour</div>
+        <div class="time-spinner-box">
+          <button class="time-spinner-btn" onclick="changeEnd('h',1)">▲</button>
+          <div class="time-spinner-val" id="eh-hour">10</div>
+          <button class="time-spinner-btn" onclick="changeEnd('h',-1)">▼</button>
+        </div>
+      </div>
+      <div class="time-sep">:</div>
+      <div class="time-spinner">
+        <div class="time-spinner-label">Min</div>
+        <div class="time-spinner-box">
+          <button class="time-spinner-btn" onclick="changeEnd('m',1)">▲</button>
+          <div class="time-spinner-val" id="eh-min">00</div>
+          <button class="time-spinner-btn" onclick="changeEnd('m',-1)">▼</button>
+        </div>
+      </div>
+      <div class="time-status-box">
+        <div class="time-spinner-label">Status</div>
+        <div class="time-status-icon" id="eh-icon">⛵</div>
+        <div class="time-status-label free" id="eh-status">Available</div>
+      </div>
+    </div>
+
+    <div class="busy-notice" id="busy-notice-end">
+      ⛈ This end time overlaps with a booked period. Please choose an earlier time.
+    </div>
+
+    <div class="price-box" id="end-price-box" style="display:none">
+      <div class="price-label">Total Price</div>
+      <div class="price-amount" id="end-price-amount">€0</div>
+      <div class="price-sub" id="end-price-sub"></div>
+    </div>
+
+    <button class="btn-complete" id="btn-confirm-end" onclick="confirmEnd()">Continue →</button>
+  </div>
+
+  <!-- STEP 4: LOCATIONS -->
+  <div class="step" id="step-4">
+    <button class="btn-back" onclick="goToStep(3)">← Back</button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <p class="section-label">Route</p>
+
+    <div class="route-block">
+      <div class="route-head"><span class="dot dot-green"></span><span class="route-name">Departure Location</span></div>
+      <div class="loc-row">
+        <input type="text" id="f-loc-start" placeholder="e.g. Budva marina" autocomplete="off">
+        <button class="btn-gps" onclick="getGPS('start')" title="Use my location">📍</button>
+      </div>
+      <div class="gps-note" id="gps-note-start"></div>
+    </div>
+
+    <div class="connector">· · ·</div>
+
+    <div class="route-block">
+      <div class="route-head"><span class="dot dot-red"></span><span class="route-name">Arrival / Return Location</span></div>
+      <div class="loc-row">
+        <input type="text" id="f-loc-end" placeholder="e.g. Kotor harbour" autocomplete="off">
+        <button class="btn-gps" onclick="getGPS('end')" title="Use my location">📍</button>
+      </div>
+      <div class="gps-note" id="gps-note-end"></div>
+    </div>
+
+    <button class="btn-complete" onclick="goToSummary()">View Summary →</button>
+  </div>
+
+  <!-- STEP 5: SUMMARY + SEND -->
+  <div class="step" id="step-5">
+    <button class="btn-back" onclick="goToStep(4)">← Back</button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <p class="section-label">Booking Summary</p>
+
+    <div class="summary-box" id="summary"></div>
+
+    <div style="margin-top:20px">
+      <button class="btn-wa" onclick="sendWA()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Send via WhatsApp
+      </button>
+      <button class="btn-ig" onclick="sendIG()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Send via Instagram DM
+      </button>
+    </div>
+    <p class="flash" id="flash"></p>
+  </div>
+
+  <!-- LEGACY SUCCESS (hidden, keeping for compat) -->
+  <div class="success" id="success-view" style="display:none!important"></div>
+</div>
+
+<script>
+var API_KEY = 'AIzaSyA1ED8-o5l9KyAURHNVUOR8gSt2kL-Lh0w';
+var CAL_ID  = 'brooklyncattaro@gmail.com';
+var MONTHS  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DAYS    = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+var calOpen = false, calYear, calMonth;
+var selectedDate = null;
+var busyDates = {};
+var calLoaded = false, calApiOk = false;
+
+// Start time picker
+var shHour = 9, shMin = 0;
+// End time picker
+var ehHour = 10, ehMin = 0;
+
+var selectedStartMin = -1;
+var selectedEndMin   = -1;
+var bookingText = '';
+
+// ─── STEPS ───────────────────────────────────────────────────
+function goToStep(n) {
+  for (var i = 1; i <= 5; i++) {
+    var el = document.getElementById('step-' + i);
+    if (el) el.classList.toggle('active', i === n);
+    var dot = document.getElementById('sdot-' + i);
+    if (dot) {
+      dot.classList.remove('active', 'done');
+      if (i < n) dot.classList.add('done');
+      else if (i === n) dot.classList.add('active');
+    }
+  }
+  window.scrollTo(0, 0);
+}
+
+function goToStep2() {
+  if (!selectedDate) return;
+  var p = selectedDate.split('-');
+  document.getElementById('start-date-label').textContent = p[2] + '/' + p[1] + '/' + p[0];
+  shHour = 9; shMin = 0;
+  updateStartPicker();
+  goToStep(2);
+}
+
+// ─── CALENDAR ────────────────────────────────────────────────
+function toggleCal() {
+  calOpen = !calOpen;
+  document.getElementById('cal-dropdown').classList.toggle('open', calOpen);
+  document.getElementById('cal-input').classList.toggle('open', calOpen);
+  if (calOpen) {
+    if (!calYear) { var n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth(); }
+    if (!calLoaded) loadCalendar(); else renderCal();
+  }
+}
+
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('cal-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    calOpen = false;
+    document.getElementById('cal-dropdown').classList.remove('open');
+    document.getElementById('cal-input').classList.remove('open');
+  }
+});
+
+function parseRanges(dk) {
+  var ranges = [];
+  (busyDates[dk] || []).forEach(function(ev) {
+    (ev.label || '').split(/\n/).forEach(function(line) {
+      line = line.replace(/^[-\s]+/, '').trim();
+      var m = line.match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})/);
+      if (m) ranges.push({
+        start: parseInt(m[1]) * 60 + parseInt(m[2]),
+        end:   parseInt(m[3]) * 60 + parseInt(m[4])
+      });
+    });
+  });
+  return ranges;
+}
+
+function isMinuteBusy(dk, min) {
+  return parseRanges(dk).some(function(r) { return min >= r.start && min < r.end; });
+}
+
+// Check if the interval [startMin, endMin) overlaps any booked range
+function intervalOverlaps(dk, startMin, endMin) {
+  return parseRanges(dk).some(function(r) { return startMin < r.end && endMin > r.start; });
+}
+
+function loadCalendar() {
+  var n = new Date();
+  var tMin = new Date(n.getFullYear(), n.getMonth(), 1).toISOString();
+  var tMax = new Date(n.getFullYear() + 1, 11, 31).toISOString();
+  var url = 'https://www.googleapis.com/calendar/v3/calendars/'
+    + encodeURIComponent(CAL_ID) + '/events?key=' + API_KEY
+    + '&timeMin=' + encodeURIComponent(tMin)
+    + '&timeMax=' + encodeURIComponent(tMax)
+    + '&singleEvents=true&orderBy=startTime&maxResults=500';
+
+  fetch(url, {mode: 'cors'})
+    .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(data) {
+      busyDates = {};
+      if (data.error) throw new Error(data.error.message);
+      (data.items || []).forEach(function(ev) {
+        var dk = (ev.start.dateTime || ev.start.date).substring(0, 10);
+        if (!busyDates[dk]) busyDates[dk] = [];
+        busyDates[dk].push({ label: (ev.description || '').trim() });
+      });
+      calLoaded = true; calApiOk = true;
+      document.getElementById('cal-loading').style.display = 'none';
+      document.getElementById('cal-body').style.display = 'block';
+      renderCal();
+    })
+    .catch(function(err) {
+      console.warn('Calendar API failed:', err);
+      calLoaded = true; calApiOk = false;
+      document.getElementById('cal-loading').innerHTML =
+        '<span style="color:var(--mist);font-size:11px;">Could not load availability.<br>Select a date and confirm via WhatsApp.</span>';
+      setTimeout(function() {
+        document.getElementById('cal-loading').style.display = 'none';
+        document.getElementById('cal-body').style.display = 'block';
+        renderCal();
+      }, 2000);
+    });
+}
+
+function calNav(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderCal();
+}
+
+function renderCal() {
+  document.getElementById('cal-month-label').textContent = MONTHS[calMonth] + ' ' + calYear;
+  var grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  DAYS.forEach(function(d) {
+    var el = document.createElement('div'); el.className = 'cal-dow'; el.textContent = d; grid.appendChild(el);
+  });
+  var firstDay = new Date(calYear, calMonth, 1).getDay();
+  var totalDays = new Date(calYear, calMonth + 1, 0).getDate();
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  for (var i = 0; i < firstDay; i++) {
+    var e = document.createElement('div'); e.className = 'cal-day empty'; grid.appendChild(e);
+  }
+  for (var d = 1; d <= totalDays; d++) {
+    var cellDate = new Date(calYear, calMonth, d);
+    var dk = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    var el = document.createElement('div'); el.className = 'cal-day'; el.textContent = d;
+    if (cellDate < today) {
+      el.classList.add('past');
+    } else {
+      if (cellDate.toDateString() === today.toDateString()) el.classList.add('today');
+      if (calLoaded) {
+        if (busyDates[dk]) {
+          el.classList.add('busy');
+          var tip = document.createElement('div'); tip.className = 'cal-tooltip';
+          var th = '<div class="cal-tooltip-title">Already booked</div>';
+          busyDates[dk].forEach(function(ev) {
+            (ev.label || '').split(/\n/).forEach(function(line) {
+              line = line.replace(/^-/, '').trim();
+              if (line) th += '<div class="cal-tooltip-event">' + line + '</div>';
+            });
+          });
+          tip.innerHTML = th; el.appendChild(tip);
+        } else if (calApiOk) {
+          el.classList.add('free');
+        }
+      }
+      if (selectedDate === dk) el.classList.add('selected');
+      (function(dateKey) {
+        el.addEventListener('click', function() {
+          selectedDate = dateKey;
+          var p = dateKey.split('-');
+          var disp = document.getElementById('cal-display');
+          disp.textContent = p[2] + '/' + p[1] + '/' + p[0];
+          disp.classList.remove('placeholder');
+          calOpen = false;
+          document.getElementById('cal-dropdown').classList.remove('open');
+          document.getElementById('cal-input').classList.remove('open');
+          document.getElementById('btn-to-step2').disabled = false;
+          renderCal();
+        });
+      })(dk);
+    }
+    grid.appendChild(el);
+  }
+}
+
+// ─── START TIME PICKER ────────────────────────────────────────
+function changeStart(part, dir) {
+  if (part === 'h') { shHour = (shHour + dir + 24) % 24; }
+  else { shMin = ((shMin + dir) + 60) % 60; }
+  updateStartPicker();
+}
+
+function updateStartPicker() {
+  document.getElementById('sh-hour').textContent = String(shHour).padStart(2, '0');
+  document.getElementById('sh-min').textContent  = String(shMin).padStart(2, '0');
+  var totalMin = shHour * 60 + shMin;
+  var busy = selectedDate && isMinuteBusy(selectedDate, totalMin);
+  document.getElementById('sh-icon').textContent   = busy ? '⛈️' : '⛵';
+  document.getElementById('sh-status').textContent = busy ? 'Not available' : 'Available';
+  document.getElementById('sh-status').className   = 'time-status-label ' + (busy ? 'busy' : 'free');
+  document.getElementById('btn-confirm-start').disabled = busy;
+  var notice = document.getElementById('busy-notice-start');
+  notice.classList.toggle('show', !!busy);
+}
+
+function confirmStart() {
+  selectedStartMin = shHour * 60 + shMin;
+  // End time starts at start + 1 min
+  var endTotalMin = selectedStartMin + 1;
+  ehHour = Math.floor(endTotalMin / 60) % 24;
+  ehMin  = endTotalMin % 60;
+  var p = selectedDate.split('-');
+  var tStr = String(shHour).padStart(2,'0') + ':' + String(shMin).padStart(2,'0');
+  document.getElementById('end-date-label').textContent = p[2] + '/' + p[1] + '/' + p[0] + ' — departure ' + tStr;
+  updateEndPicker();
+  goToStep(3);
+}
+
+// ─── END TIME PICKER ─────────────────────────────────────────
+function changeEnd(part, dir) {
+  if (part === 'h') { ehHour = (ehHour + dir + 24) % 24; }
+  else { ehMin = ((ehMin + dir) + 60) % 60; }
+  updateEndPicker();
+}
+
+function calcPrice(durationMin) {
+  // durationMin = end - start in minutes
+  // Round up to full hours: 1h=€400, 2h=€600, 3h=€800 (+€200 each extra hour)
+  if (durationMin <= 0) return 0;
+  var hours = Math.ceil(durationMin / 60); // round up
+  if (hours < 1) hours = 1;
+  return 400 + (hours - 1) * 200;
+}
+
+function updateEndPicker() {
+  document.getElementById('eh-hour').textContent = String(ehHour).padStart(2, '0');
+  document.getElementById('eh-min').textContent  = String(ehMin).padStart(2, '0');
+
+  var endMin = ehHour * 60 + ehMin;
+  var startMin = selectedStartMin;
+
+  // End must be after start
+  var isBeforeStart = (endMin <= startMin);
+  // Check if range overlaps any busy period
+  var overlaps = !isBeforeStart && selectedDate && intervalOverlaps(selectedDate, startMin, endMin);
+
+  var isBad = isBeforeStart || overlaps;
+
+  var notice = document.getElementById('busy-notice-end');
+  var priceBox = document.getElementById('end-price-box');
+  var confirmBtn = document.getElementById('btn-confirm-end');
+
+  if (isBeforeStart) {
+    document.getElementById('eh-icon').textContent = '⏰';
+    document.getElementById('eh-status').textContent = 'Too early';
+    document.getElementById('eh-status').className = 'time-status-label busy';
+    notice.textContent = '⚠️ End time must be after departure time.';
+    notice.classList.add('show');
+    priceBox.style.display = 'none';
+    confirmBtn.disabled = true;
+    return;
+  }
+
+  if (overlaps) {
+    document.getElementById('eh-icon').textContent = '⛈️';
+    document.getElementById('eh-status').textContent = 'Overlaps booking';
+    document.getElementById('eh-status').className = 'time-status-label busy';
+    notice.textContent = '⛈ This end time overlaps with a booked period. Please choose an earlier time.';
+    notice.classList.add('show');
+    priceBox.style.display = 'none';
+    confirmBtn.disabled = true;
+    return;
+  }
+
+  // All good
+  document.getElementById('eh-icon').textContent = '⛵';
+  document.getElementById('eh-status').textContent = 'Available';
+  document.getElementById('eh-status').className = 'time-status-label free';
+  notice.classList.remove('show');
+
+  var durationMin = endMin - startMin;
+  var price = calcPrice(durationMin);
+  var hours = Math.ceil(durationMin / 60);
+
+  var p = selectedDate.split('-');
+  var sStr = String(Math.floor(startMin/60)).padStart(2,'0') + ':' + String(startMin%60).padStart(2,'0');
+  var eStr = String(ehHour).padStart(2,'0') + ':' + String(ehMin).padStart(2,'0');
+  var dStr = hours === 1 ? '1 hour' : hours + ' hours';
+
+  document.getElementById('end-price-amount').textContent = '€' + price;
+  document.getElementById('end-price-sub').textContent =
+    p[2]+'/'+p[1]+'/'+p[0] + ' · ' + sStr + ' – ' + eStr + ' (' + dStr + ')';
+  priceBox.style.display = 'block';
+  confirmBtn.disabled = false;
+}
+
+function confirmEnd() {
+  selectedEndMin = ehHour * 60 + ehMin;
+  goToStep(4);
+}
+
+// ─── LOCATIONS ───────────────────────────────────────────────
+function getGPS(which) {
+  if (!navigator.geolocation) {
+    var note = document.getElementById('gps-note-' + which);
+    note.textContent = 'Geolocation not supported on this device.';
+    return;
+  }
+  var note = document.getElementById('gps-note-' + which);
+  note.textContent = 'Getting location...';
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var lat = pos.coords.latitude.toFixed(5);
+      var lng = pos.coords.longitude.toFixed(5);
+      var coords = lat + ', ' + lng;
+      document.getElementById('f-loc-' + which).value = coords;
+      note.textContent = '📍 Location captured (' + lat + ', ' + lng + ')';
+    },
+    function(err) {
+      note.textContent = 'Could not get location. Please type it manually.';
+    }
+  );
+}
+
+// ─── SUMMARY ─────────────────────────────────────────────────
+function goToSummary() {
+  var locStart = document.getElementById('f-loc-start').value.trim();
+  var locEnd   = document.getElementById('f-loc-end').value.trim();
+  if (!locStart || !locEnd) {
+    alert('Please enter both departure and arrival locations.');
+    return;
+  }
+
+  var p = selectedDate.split('-');
+  var dateStr = p[2] + '/' + p[1] + '/' + p[0];
+  var sStr = String(Math.floor(selectedStartMin/60)).padStart(2,'0') + ':' + String(selectedStartMin%60).padStart(2,'0');
+  var eStr = String(Math.floor(selectedEndMin/60)).padStart(2,'0')   + ':' + String(selectedEndMin%60).padStart(2,'0');
+  var durationMin = selectedEndMin - selectedStartMin;
+  var hours = Math.ceil(durationMin / 60);
+  var price = calcPrice(durationMin);
+  var dStr = hours === 1 ? '1 hour' : hours + ' hours';
+
+  var rows = [
+    ['Date',      dateStr],
+    ['Departure', sStr],
+    ['Return',    eStr],
+    ['Duration',  dStr + ' (billed)'],
+    ['Price',     '€' + price],
+    ['From',      locStart],
+    ['To',        locEnd],
+  ];
+
+  var html = '';
+  rows.forEach(function(r) {
+    html += '<div class="srow"><span class="sk">' + r[0] + '</span><span class="sv">' + r[1] + '</span></div>';
+  });
+  document.getElementById('summary').innerHTML = html;
+
+  bookingText = 'BOAT BOOKING REQUEST\nLola Boat Rent Montenegro\n----------------------------\n';
+  rows.forEach(function(r) { bookingText += r[0] + ': ' + r[1] + '\n'; });
+  bookingText += '----------------------------\nBooked via just-book-it form';
+
+  goToStep(5);
+}
+
+function sendWA() {
+  // Uses wa.me which on desktop Fedora opens the installed WhatsApp app
+  window.open('https://wa.me/38267020929?text=' + encodeURIComponent(bookingText), '_blank');
+}
+
+function sendIG() {
+  // ig.me/m/{username} opens a direct DM thread with that profile in the browser
+  // The text is pre-filled as much as the IG web app allows via the message param
+  var igUrl = 'https://ig.me/m/lola.boat.rent.montenegro';
+  // Copy to clipboard so user can paste instantly if auto-fill doesn't work
+  navigator.clipboard.writeText(bookingText).then(function() {
+    document.getElementById('flash').textContent = '✓ Message copied — just paste it in the chat and hit Send!';
+    window.open(igUrl, '_blank');
+    setTimeout(function() { document.getElementById('flash').textContent = ''; }, 5000);
+  }).catch(function() {
+    window.open(igUrl, '_blank');
+  });
+}
+</script>
+</body>
+</html>
