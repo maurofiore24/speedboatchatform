@@ -491,24 +491,24 @@ function loadCalendar() {
           var tEnd = ev.end && ev.end.dateTime
             ? new Date(ev.end.dateTime).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
             : '';
-          // Filter out personal data from summary
-          function cleanSummary(text) {
-            if (!text) return '';
-            // Remove phone numbers (various formats)
-            text = text.replace(/(\+?\d[\d\s\-().]{6,}\d)/g, '');
-            // Remove Instagram usernames
-            text = text.replace(/@\w+/g, '');
-            // Remove proper names (capitalized words that look like names - 2+ capital words in sequence)
-            text = text.replace(/\b([A-ZČĆŠĐŽ][a-zčćšđž]+\s+[A-ZČĆŠĐŽ][a-zčćšđž]+)\b/g, '');
-            // Clean up extra spaces, dashes, commas left behind
-            text = text.replace(/[-–,]\s*[-–,]/g, '–');
-            text = text.replace(/^\s*[-–,\s]+|[-–,\s]+$/g, '');
-            text = text.replace(/\s{2,}/g, ' ').trim();
-            return text;
-          }
-          var cleanLabel = cleanSummary(ev.summary || '');
-          var displayLabel = cleanLabel || timeLabel;
+          var timeLabel = tEnd ? tStart + ' – ' + tEnd : tStart;
+          var displayLabel = (ev.description || "").trim() || timeLabel;
           busyDates[dk].push({ time: displayLabel });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         });
       }
       calLoaded = true;
