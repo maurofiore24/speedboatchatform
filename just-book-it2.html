@@ -446,7 +446,6 @@ var calYear, calMonth;
 var selectedDate = null;
 var busyDates = {};
 var calLoaded = false;
-var calApiOk = false;
 var bookingText = '';
 
 function toggleCal() {
@@ -477,44 +476,38 @@ function loadCalendar() {
     + '&timeMax=' + encodeURIComponent(tMax)
     + '&singleEvents=true&orderBy=startTime&maxResults=500';
 
-  fetch(url, { mode: 'cors' })
-    .then(function(r) {
-      if (!r.ok) throw new Error('API error: ' + r.status);
-      return r.json();
-    })
+  fetch(url)
+    .then(function(r) { return r.json(); })
     .then(function(data) {
       busyDates = {};
-      if (data.error) {
-        throw new Error(data.error.message || 'Calendar API error');
-      }
       if (data.items) {
         data.items.forEach(function(ev) {
           var start = ev.start.dateTime || ev.start.date;
           var dk = start.substring(0,10);
           if (!busyDates[dk]) busyDates[dk] = [];
-          var t = ev.start.dateTime
+          var tStart = ev.start.dateTime
             ? new Date(ev.start.dateTime).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
             : 'All day';
-          busyDates[dk].push({ summary: ev.summary || 'Booked', time: t });
+          var tEnd = ev.end && ev.end.dateTime
+            ? new Date(ev.end.dateTime).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
+            : '';
+          var timeLabel = tEnd ? tStart + ' – ' + tEnd : tStart;
+          busyDates[dk].push({ time: timeLabel });
         });
       }
       calLoaded = true;
-      calApiOk = true;
       document.getElementById('cal-loading').style.display = 'none';
       document.getElementById('cal-body').style.display = 'block';
       renderCal();
     })
-    .catch(function(err) {
-      console.warn('Calendar API failed:', err);
+    .catch(function() {
       calLoaded = true;
-      calApiOk = false;
-      busyDates = {};
-      document.getElementById('cal-loading').innerHTML = '<span style="color:var(--mist);font-size:11px;">⚠️ Could not load availability.<br>Select a date and confirm via WhatsApp.</span>';
+      document.getElementById('cal-loading').innerHTML = '<span style="color:var(--mist);font-size:11px;">Could not load availability.<br>You can still select a date.</span>';
       setTimeout(function() {
         document.getElementById('cal-loading').style.display = 'none';
         document.getElementById('cal-body').style.display = 'block';
         renderCal();
-      }, 2000);
+      }, 1800);
     });
 }
 
@@ -565,14 +558,13 @@ function renderCal() {
           tip.className = 'cal-tooltip';
           var th = '<div class="cal-tooltip-title">Already booked</div>';
           busyDates[dk].forEach(function(ev) {
-            th += '<div class="cal-tooltip-event">' + ev.time + ' &ndash; ' + ev.summary + '</div>';
+            th += '<div class="cal-tooltip-event">' + ev.time + '</div>';
           });
           tip.innerHTML = th;
           el.appendChild(tip);
-        } else if (calApiOk) {
+        } else {
           el.classList.add('free');
         }
-        // ako API nije radio — nema boje, datumi ostaju neutralni
       }
       if (selectedDate === dk) el.classList.add('selected');
       (function(dateKey) {
