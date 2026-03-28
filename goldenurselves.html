@@ -484,19 +484,7 @@
 
     <div class="route-block">
       <div class="route-head"><span class="dot dot-green"></span><span class="route-name">Departure Location</span></div>
-      <select id="f-loc-start">
-        <option value="">Select departure...</option>
-        <option>Kotor Riva</option>
-        <option>Kotor Park</option>
-        <option>Kotor Forza 1</option>
-        <option>Kotor Forza 2</option>
-        <option>Perast Centar</option>
-        <option>Adriatica</option>
-        <option>Porto Montenegro</option>
-        <option>Tivat Kalimanj</option>
-        <option>Porto Novi</option>
-        <option>Herceg Novi</option>
-      </select>
+      <div style="padding:10px 13px;background:rgba(29,158,117,0.08);border:1px solid rgba(29,158,117,0.25);border-radius:2px;font-size:14px;color:#6dddb4;" id="departure-display">—</div>
     </div>
 
     <div class="connector">· · ·</div>
@@ -1120,7 +1108,10 @@ function updateEndPicker() {
 
 function confirmEnd() {
   selectedEndMin = ehHour * 60 + ehMin;
-  showAnim(function() { goToStep(5); });
+  showAnim(function() {
+    document.getElementById('departure-display').textContent = selectedPickup;
+    goToStep(5);
+  });
 }
 
 // ─── LOCATIONS ───────────────────────────────────────────────
@@ -1148,10 +1139,10 @@ function getGPS(which) {
 
 // ─── SUMMARY ─────────────────────────────────────────────────
 function goToSummary() {
-  var locStart = document.getElementById('f-loc-start').value;
+  var locStart = selectedPickup;
   var locEnd   = document.getElementById('f-loc-end').value;
-  if (!locStart || !locEnd) {
-    alert('Please select both departure and arrival locations.');
+  if (!locEnd) {
+    alert('Please select an arrival location.');
     return;
   }
 
