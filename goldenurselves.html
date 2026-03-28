@@ -196,14 +196,86 @@
     margin-top:8px; display:none; }
   .end-time-info.show { display:block; }
 
+  /* BACKGROUND SLIDESHOW */
+  .bg-layer { position:fixed; inset:0; z-index:0; background-size:cover; background-position:center;
+    transition:opacity 1.8s ease; opacity:0; }
+  .bg-layer.active { opacity:1; }
+  .bg-overlay { position:fixed; inset:0; z-index:1;
+    background:linear-gradient(to bottom, rgba(5,12,28,0.55) 0%, rgba(5,12,28,0.72) 100%); }
+  body { position:relative; z-index:2; }
+  .card { position:relative; z-index:3; background:rgba(10,22,40,0.82);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+
+  /* ANIMATION OVERLAY */
+  .anim-overlay { display:none; position:fixed; inset:0; z-index:100;
+    background:rgba(5,12,28,0.85); align-items:center; justify-content:center;
+    flex-direction:column; gap:16px; }
+  .anim-overlay.show { display:flex; animation:fadeUp 0.4s ease both; }
+  .anim-overlay video { width:min(380px,90vw); border-radius:8px;
+    border:1px solid rgba(201,168,76,0.35); box-shadow:0 20px 60px rgba(0,0,0,0.7); }
+  .anim-caption { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300;
+    color:var(--cream); letter-spacing:0.08em; text-align:center; }
+  .anim-caption span { color:var(--gold); font-style:italic; }
+  .anim-skip { background:none; border:1px solid rgba(201,168,76,0.3); color:var(--mist);
+    font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:7px 18px;
+    border-radius:2px; cursor:pointer; transition:all 0.2s; }
+  .anim-skip:hover { color:var(--gold); border-color:var(--gold); }
+
+  /* MUSIC INDICATOR */
+  .music-bar { position:fixed; bottom:18px; right:18px; z-index:10;
+    display:none; align-items:center; gap:8px;
+    background:rgba(10,22,40,0.85); border:1px solid rgba(201,168,76,0.25);
+    border-radius:20px; padding:6px 14px; backdrop-filter:blur(8px); cursor:pointer;
+    transition:border-color 0.2s; }
+  .music-bar:hover { border-color:rgba(201,168,76,0.6); }
+  .music-bar.show { display:flex; }
+  .music-bar.paused .music-bar-waves span { animation-play-state:paused; opacity:0.4; }
+  .music-bar-waves { display:flex; gap:2px; align-items:flex-end; height:14px; }
+  .music-bar-waves span { width:3px; background:var(--gold); border-radius:2px;
+    animation:wave 0.8s ease-in-out infinite; }
+  .music-bar-waves span:nth-child(2) { animation-delay:0.15s; }
+  .music-bar-waves span:nth-child(3) { animation-delay:0.3s; }
+  .music-bar-waves span:nth-child(4) { animation-delay:0.45s; }
+  @keyframes wave { 0%,100% { height:4px; } 50% { height:14px; } }
+  .music-bar-label { font-size:10px; color:var(--mist); letter-spacing:0.1em; text-transform:uppercase; }
+
   @media (max-width:480px) {
     .card { padding:36px 20px 30px; }
     h1 { font-size:24px; }
     .time-spinner-val { font-size:24px; }
+    .anim-overlay video { width:92vw; }
   }
 </style>
 </head>
 <body>
+
+<!-- BACKGROUND LAYERS (crossfade) -->
+<div class="bg-layer" id="bg-0"></div>
+<div class="bg-layer" id="bg-1"></div>
+<div class="bg-overlay"></div>
+
+<!-- MUSIC -->
+<audio id="bg-music" loop preload="auto">
+  <source src="https://maurofiore24.github.io/speedboatchatform/success.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ANIMATION OVERLAY -->
+<div class="anim-overlay" id="anim-overlay">
+  <div class="anim-caption">Your journey on <span>Lola</span> awaits ⚓</div>
+  <video id="anim-video" muted playsinline>
+    <source src="https://maurofiore24.github.io/speedboatchatform/animation.mp4" type="video/mp4">
+  </video>
+  <button class="anim-skip" onclick="closeAnim()">Continue booking →</button>
+</div>
+
+<!-- MUSIC INDICATOR -->
+<div class="music-bar" id="music-bar" onclick="toggleMusic()" title="Pause / Resume">
+  <div class="music-bar-waves">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <span class="music-bar-label" id="music-bar-label">Now playing</span>
+</div>
+
 <div class="card">
   <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
   <div class="corner corner-bl"></div><div class="corner corner-br"></div>
@@ -401,6 +473,78 @@
 </div>
 
 <script>
+// ─── BACKGROUND IMAGES ───────────────────────────────────────
+var BASE = 'https://maurofiore24.github.io/speedboatchatform/';
+var BG_IMAGES = [
+  BASE + 'Screenshot%20From%202026-03-13%2019-53-16.png',
+  BASE + 'Screenshot%20From%202026-03-13%2023-01-03.png',
+  BASE + 'Screenshot%20From%202026-03-13%2023-01-25.png',
+  BASE + 'Screenshot%20From%202026-03-13%2019-56-19.png',
+  BASE + 'Screenshot%20From%202026-03-13%2023-04-16.png',
+];
+var bgActive = 0;
+
+function setBg(stepIndex) {
+  var next = 1 - bgActive;
+  var url = BG_IMAGES[Math.min(stepIndex, BG_IMAGES.length - 1)];
+  document.getElementById('bg-' + next).style.backgroundImage = 'url("' + url + '")';
+  document.getElementById('bg-' + bgActive).classList.remove('active');
+  document.getElementById('bg-' + next).classList.add('active');
+  bgActive = next;
+}
+
+// ─── MUSIC ───────────────────────────────────────────────────
+var musicStarted = false;
+var musicPaused  = false;
+
+function startMusic() {
+  if (musicStarted) return;
+  var audio = document.getElementById('bg-music');
+  audio.volume = 0;
+  audio.play().then(function() {
+    musicStarted = true;
+    document.getElementById('music-bar').classList.add('show');
+    var step = 0; var target = 0.6;
+    var iv = setInterval(function() {
+      step++;
+      audio.volume = Math.min(target, (step / 40) * target);
+      if (audio.volume >= target) clearInterval(iv);
+    }, 100);
+  }).catch(function(){});
+}
+
+function toggleMusic() {
+  var audio = document.getElementById('bg-music');
+  var bar   = document.getElementById('music-bar');
+  var lbl   = document.getElementById('music-bar-label');
+  if (musicPaused) {
+    audio.play(); musicPaused = false;
+    bar.classList.remove('paused'); lbl.textContent = 'Now playing';
+  } else {
+    audio.pause(); musicPaused = true;
+    bar.classList.add('paused'); lbl.textContent = 'Paused';
+  }
+}
+
+// ─── ANIMATION OVERLAY ───────────────────────────────────────
+function showAnim(callback) {
+  var overlay = document.getElementById('anim-overlay');
+  var video   = document.getElementById('anim-video');
+  overlay._cb = callback;
+  overlay.classList.add('show');
+  video.currentTime = 0;
+  video.play().catch(function(){});
+  video.onended = function() { closeAnim(); };
+  setTimeout(function() { if (overlay.classList.contains('show')) closeAnim(); }, 9000);
+}
+
+function closeAnim() {
+  var overlay = document.getElementById('anim-overlay');
+  document.getElementById('anim-video').pause();
+  overlay.classList.remove('show');
+  if (overlay._cb) { overlay._cb(); overlay._cb = null; }
+}
+
 var API_KEY = 'AIzaSyA1ED8-o5l9KyAURHNVUOR8gSt2kL-Lh0w';
 var CAL_ID  = 'brooklyncattaro@gmail.com';
 var MONTHS  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -432,6 +576,7 @@ function goToStep(n) {
       else if (i === n) dot.classList.add('active');
     }
   }
+  setBg(n - 1);
   window.scrollTo(0, 0);
 }
 
@@ -441,8 +586,12 @@ function goToStep2() {
   document.getElementById('start-date-label').textContent = p[2] + '/' + p[1] + '/' + p[0];
   shHour = 9; shMin = 0;
   updateStartPicker();
+  startMusic(); // music starts here, fades in
   goToStep(2);
 }
+
+// ─── INIT ─────────────────────────────────────────────────────
+setBg(0);
 
 // ─── CALENDAR ────────────────────────────────────────────────
 function toggleCal() {
@@ -703,7 +852,7 @@ function updateEndPicker() {
 
 function confirmEnd() {
   selectedEndMin = ehHour * 60 + ehMin;
-  goToStep(4);
+  showAnim(function() { goToStep(4); });
 }
 
 // ─── LOCATIONS ───────────────────────────────────────────────
