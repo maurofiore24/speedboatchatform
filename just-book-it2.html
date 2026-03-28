@@ -771,20 +771,21 @@ function goToSummary() {
 }
 
 function sendWA() {
-  window.open('https://wa.me/38269123456?text=' + encodeURIComponent(bookingText), '_blank');
+  // Uses wa.me which on desktop Fedora opens the installed WhatsApp app
+  window.open('https://wa.me/38267020929?text=' + encodeURIComponent(bookingText), '_blank');
 }
 
 function sendIG() {
-  // Copy text to clipboard first, then open Instagram
+  // ig.me/m/{username} opens a direct DM thread with that profile in the browser
+  // The text is pre-filled as much as the IG web app allows via the message param
+  var igUrl = 'https://ig.me/m/lola.boat.rent.montenegro';
+  // Copy to clipboard so user can paste instantly if auto-fill doesn't work
   navigator.clipboard.writeText(bookingText).then(function() {
-    document.getElementById('flash').textContent = '✓ Booking details copied! Paste in your Instagram message.';
-    setTimeout(function() {
-      window.open('https://www.instagram.com/direct/inbox/', '_blank');
-    }, 600);
-    setTimeout(function() { document.getElementById('flash').textContent = ''; }, 4000);
+    document.getElementById('flash').textContent = '✓ Message copied — just paste it in the chat and hit Send!';
+    window.open(igUrl, '_blank');
+    setTimeout(function() { document.getElementById('flash').textContent = ''; }, 5000);
   }).catch(function() {
-    // Fallback: just open Instagram
-    window.open('https://www.instagram.com/direct/inbox/', '_blank');
+    window.open(igUrl, '_blank');
   });
 }
 </script>
