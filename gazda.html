@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lola — Captain's Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #060d18; --surface: rgba(11,22,40,0.78); --surface2: rgba(15,30,53,0.85);
+  --gold: #c9a84c; --gold-light: #e8c97a; --gold-dim: rgba(201,168,76,0.15);
+  --cream: #f0ebe0; --mist: #7a94b0; --green: #1db87e; --red: #e05050;
+  --border: rgba(201,168,76,0.22); --border2: rgba(255,255,255,0.08);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; color: var(--cream);
+  min-height: 100vh; overflow-x: hidden; background: var(--bg); }
+
+/* BACKGROUND SLIDESHOW */
+.bg-slide { position: fixed; inset: 0; z-index: 0; background-size: cover;
+  background-position: center; transition: opacity 2.5s ease; opacity: 0; }
+.bg-slide.active { opacity: 1; }
+.bg-darken { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom,
+    rgba(4,10,22,0.55) 0%,
+    rgba(4,10,22,0.45) 40%,
+    rgba(4,10,22,0.65) 100%); }
+
+/* GRAIN */
+body::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:998;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.45; }
+
+/* GOLD GLOW */
+body::before { content:''; position:fixed; top:0; left:0; right:0; height:280px; pointer-events:none; z-index:2;
+  background: radial-gradient(ellipse 60% 100% at 50% -20%, rgba(201,168,76,0.1) 0%, transparent 70%); }
+
+/* ALL CONTENT ABOVE BG */
+.header, .main { position: relative; z-index: 3; }
+
+/* HEADER */
+.header { padding: 32px 40px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  background: rgba(4,10,22,0.6); backdrop-filter: blur(20px); }
+.header-left { display: flex; align-items: center; gap: 16px; }
+.header-logo { width: 38px; height: 38px; opacity: 0.9; }
+.header-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400;
+  color: var(--cream); letter-spacing: 0.04em; }
+.header-title span { color: var(--gold); font-style: italic; }
+.header-sub { font-size: 11px; color: var(--mist); letter-spacing: 0.14em; text-transform: uppercase; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.btn-refresh { background: var(--gold-dim); border: 1px solid var(--border);
+  color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 16px;
+  border-radius: 2px; cursor: pointer; transition: all 0.2s; }
+.btn-refresh:hover { background: rgba(201,168,76,0.28); }
+.last-updated { font-size: 11px; color: var(--mist); font-family: 'DM Mono', monospace; }
+
+/* MAIN LAYOUT */
+.main { padding: 32px 40px; max-width: 1400px; margin: 0 auto; }
+
+/* PERIOD TABS */
+.period-tabs { display: flex; gap: 4px; margin-bottom: 32px;
+  background: rgba(11,22,40,0.7); backdrop-filter: blur(12px);
+  border: 1px solid var(--border2); border-radius: 3px; padding: 4px; width: fit-content; }
+.period-tab { padding: 7px 18px; border-radius: 2px; font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; color: var(--mist);
+  transition: all 0.2s; border: none; background: none; font-family: 'DM Sans', sans-serif; }
+.period-tab.active { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--border); }
+
+/* KPI ROW */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.kpi { background: var(--surface); border: 1px solid var(--border2); border-radius: 3px;
+  padding: 20px 22px; position: relative; overflow: hidden; animation: fadeUp 0.5s ease both;
+  backdrop-filter: blur(16px); cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+.kpi:hover { border-color: var(--border); transform: translateY(-1px); }
+.kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.4; }
+.kpi-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--mist); margin-bottom: 10px; }
+.kpi-value { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 300;
+  color: var(--cream); line-height: 1; }
+.kpi-value.gold { color: var(--gold); }
+.kpi-value.green { color: var(--green); }
+.kpi-sub { font-size: 11px; color: var(--mist); margin-top: 6px; font-family: 'DM Mono', monospace; }
+
+/* MILESTONE BADGE on revenue KPI */
+.milestone-badge { display: none; position: absolute; top: 10px; right: 10px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--bg); font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 10px; }
+.milestone-badge.show { display: block; animation: pulse 1.5s ease infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.8; transform:scale(1.05); } }
+
+/* TWO-COL GRID */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.grid3 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
+@media (max-width: 900px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+/* PANEL */
+.panel { background: var(--surface); border: 1px solid var(--border2); border-radius: 3px;
+  padding: 22px 24px; animation: fadeUp 0.6s ease both; backdrop-filter: blur(16px); }
+.panel-title { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 18px; opacity: 0.85; display: flex;
+  align-items: center; justify-content: space-between; }
+.panel-title span { color: var(--mist); font-size: 10px; letter-spacing: 0.08em; }
+
+/* BOOKING ROWS */
+.booking-row { display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border2); font-size: 12px; }
+.booking-row:last-child { border-bottom: none; }
+.booking-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--mist); min-width: 80px; }
+.booking-times { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--cream); min-width: 90px; }
+.booking-station { flex: 1; font-size: 11px; color: var(--mist); }
+.booking-duration { font-size: 11px; color: var(--cream); min-width: 50px; }
+.booking-price { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--gold);
+  font-weight: 400; min-width: 60px; text-align: right; }
+.booking-empty { text-align: center; padding: 24px; color: var(--mist); font-size: 12px; }
+
+/* DAY EARNINGS BAR */
+.day-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.day-bar-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mist); width: 30px; flex-shrink: 0; }
+.day-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.day-bar-fill { height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 1s cubic-bezier(0.16,1,0.3,1); }
+.day-bar-val { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); width: 55px; text-align: right; flex-shrink: 0; }
+
+/* STATION */
+.station-grid { display: flex; flex-direction: column; gap: 8px; }
+.station-row { display: flex; align-items: center; gap: 10px; }
+.station-name { font-size: 11px; color: var(--cream); width: 130px; flex-shrink: 0; }
+.station-bar-track { flex: 1; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.station-bar-fill { height: 100%; border-radius: 2px; background: var(--green); transition: width 1s cubic-bezier(0.16,1,0.3,1); }
+.station-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mist); width: 25px; text-align: right; }
+
+/* WINDY */
+.windy-wrap { border-radius: 3px; overflow: hidden; border: 1px solid var(--border2); }
+.windy-wrap iframe { display: block; width: 100%; }
+
+/* MONTH GRID */
+.month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.mg-dow { font-size: 9px; color: var(--mist); text-align: center; padding: 2px 0; letter-spacing: 0.06em; opacity: 0.6; }
+.mg-day { aspect-ratio: 1; border-radius: 2px; display: flex; align-items: center; justify-content: center;
+  font-size: 10px; position: relative; }
+.mg-day.empty { background: transparent; }
+.mg-day.past { opacity: 0.3; }
+.mg-day.today { outline: 1px solid rgba(201,168,76,0.5); outline-offset: -1px; }
+.mg-day.booked { background: rgba(201,168,76,0.2); color: var(--gold-light); font-weight: 500; }
+.mg-day.free { background: rgba(29,184,126,0.08); color: rgba(29,184,126,0.5); }
+.mg-day-num { font-size: 10px; }
+.mg-day-dot { position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 3px; border-radius: 50%; background: var(--gold); }
+
+/* ERROR */
+.error-notice { background: rgba(224,80,80,0.08); border: 1px solid rgba(224,80,80,0.25);
+  border-radius: 3px; padding: 12px 16px; font-size: 12px; color: #f08080; margin-bottom: 20px; display: none; }
+
+/* 🎉 MILESTONE CELEBRATION OVERLAY */
+.celebration { display: none; position: fixed; inset: 0; z-index: 1000;
+  align-items: center; justify-content: center; flex-direction: column;
+  background: rgba(4,10,22,0.85); backdrop-filter: blur(8px); }
+.celebration.show { display: flex; animation: fadeUp 0.4s ease both; }
+.celebration-inner { text-align: center; }
+.celebration-emoji { font-size: 72px; animation: bounce 0.6s ease infinite alternate; }
+@keyframes bounce { from { transform: scale(1); } to { transform: scale(1.15); } }
+.celebration-title { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300;
+  color: var(--gold); letter-spacing: 0.04em; margin: 16px 0 8px; }
+.celebration-sub { font-size: 14px; color: var(--mist); letter-spacing: 0.08em; margin-bottom: 32px; }
+.celebration-amount { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--cream);
+  background: var(--gold-dim); border: 1px solid var(--border); border-radius: 3px;
+  padding: 12px 28px; margin-bottom: 32px; display: inline-block; }
+.btn-celebration-close { background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border: none; color: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 12px;
+  font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; padding: 13px 32px;
+  border-radius: 2px; cursor: pointer; }
+/* CONFETTI */
+.confetti-piece { position: fixed; width: 8px; height: 8px; opacity: 0;
+  animation: confettiFall 3s ease-in forwards; border-radius: 1px; z-index: 1001; }
+@keyframes confettiFall {
+  0%   { opacity: 1; transform: translateY(-20px) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+}
+
+/* MUSIC INDICATOR */
+.music-bar { position: fixed; bottom: 18px; right: 18px; z-index: 10;
+  display: none; align-items: center; gap: 8px;
+  background: rgba(10,22,40,0.9); border: 1px solid var(--border);
+  border-radius: 20px; padding: 6px 14px; backdrop-filter: blur(8px); cursor: pointer; }
+.music-bar.show { display: flex; }
+.music-bar.paused .music-bar-waves span { animation-play-state: paused; opacity: 0.4; }
+.music-bar-waves { display: flex; gap: 2px; align-items: flex-end; height: 14px; }
+.music-bar-waves span { width: 3px; background: var(--gold); border-radius: 2px;
+  animation: wave 0.8s ease-in-out infinite; }
+.music-bar-waves span:nth-child(2) { animation-delay: 0.15s; }
+.music-bar-waves span:nth-child(3) { animation-delay: 0.3s; }
+.music-bar-waves span:nth-child(4) { animation-delay: 0.45s; }
+@keyframes wave { 0%,100% { height: 4px; } 50% { height: 14px; } }
+.music-bar-label { font-size: 10px; color: var(--mist); letter-spacing: 0.1em; text-transform: uppercase; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width: 600px) {
+  .main { padding: 20px 16px; }
+  .header { padding: 20px 16px; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .celebration-title { font-size: 36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND SLIDESHOW -->
+<div class="bg-slide" id="bg-0"></div>
+<div class="bg-slide" id="bg-1"></div>
+<div class="bg-darken"></div>
+
+<!-- MILESTONE AUDIO -->
+<audio id="milestone-audio" preload="auto">
+  <source src="https://maurofiore24.github.io/speedboatchatform/success.mp3" type="audio/mpeg">
+</audio>
+
+<!-- MUSIC BAR -->
+<div class="music-bar" id="music-bar" onclick="toggleMusic()">
+  <div class="music-bar-waves"><span></span><span></span><span></span><span></span></div>
+  <span class="music-bar-label" id="music-bar-label">Now playing</span>
+</div>
+
+<!-- 🎉 CELEBRATION OVERLAY -->
+<div class="celebration" id="celebration">
+  <div class="celebration-inner">
+    <div class="celebration-emoji">🥂</div>
+    <div class="celebration-title">€5.000 milestone!</div>
+    <div class="celebration-sub">Lola is doing her thing, Captain ⚓</div>
+    <div class="celebration-amount" id="celebration-amount">€0</div>
+    <button class="btn-celebration-close" onclick="closeCelebration()">Let's keep sailing →</button>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-left">
+    <svg class="header-logo" viewBox="0 0 48 48" fill="none">
+      <path d="M6 32 C10 28 14 26 24 26 C34 26 38 28 42 32" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M10 32 L8 38 H40 L38 32" stroke="#c9a84c" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M24 26 L24 16 L32 22" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M24 16 L18 20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="header-title">Lola <span>Dashboard</span></div>
+      <div class="header-sub">Captain's Overview · Boka Bay</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="last-updated">Loading...</span>
+    <button class="btn-refresh" onclick="loadAll()">↻ Refresh</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="error-notice" id="error-notice"></div>
+
+  <!-- PERIOD TABS -->
+  <div class="period-tabs">
+    <button class="period-tab active" onclick="setPeriod('week')">This Week</button>
+    <button class="period-tab" onclick="setPeriod('month')">This Month</button>
+    <button class="period-tab" onclick="setPeriod('season')">Season (Apr–Oct)</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpi-row">
+    <div class="kpi" style="animation-delay:0.05s" onclick="checkMilestone()">
+      <div class="kpi-label">Projected Revenue</div>
+      <div class="kpi-value gold" id="kpi-revenue">—</div>
+      <div class="kpi-sub" id="kpi-revenue-sub">loading...</div>
+      <div class="milestone-badge" id="milestone-badge">🏆 5k+</div>
+    </div>
+    <div class="kpi" style="animation-delay:0.1s">
+      <div class="kpi-label">Tours Booked</div>
+      <div class="kpi-value" id="kpi-tours">—</div>
+      <div class="kpi-sub" id="kpi-tours-sub">loading...</div>
+    </div>
+    <div class="kpi" style="animation-delay:0.15s">
+      <div class="kpi-label">Hours on Water</div>
+      <div class="kpi-value" id="kpi-hours">—</div>
+      <div class="kpi-sub" id="kpi-hours-sub">loading...</div>
+    </div>
+    <div class="kpi" style="animation-delay:0.2s">
+      <div class="kpi-label">Avg Tour Duration</div>
+      <div class="kpi-value" id="kpi-avg">—</div>
+      <div class="kpi-sub" id="kpi-avg-sub">loading...</div>
+    </div>
+    <div class="kpi" style="animation-delay:0.25s">
+      <div class="kpi-label">Avg Daily Revenue</div>
+      <div class="kpi-value green" id="kpi-daily">—</div>
+      <div class="kpi-sub" id="kpi-daily-sub">loading...</div>
+    </div>
+  </div>
+
+  <!-- EARNINGS BY DAY + UPCOMING BOOKINGS -->
+  <div class="grid3">
+    <div class="panel" style="animation-delay:0.3s">
+      <div class="panel-title">Earnings by Day <span id="bar-period-label"></span></div>
+      <div id="day-bars">
+        <div style="color:var(--mist);font-size:12px;text-align:center;padding:20px">Loading...</div>
+      </div>
+    </div>
+    <div class="panel" style="animation-delay:0.35s">
+      <div class="panel-title">Top Pickup Stations</div>
+      <div class="station-grid" id="station-grid">
+        <div style="color:var(--mist);font-size:12px;text-align:center;padding:20px">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPCOMING BOOKINGS + MONTH CALENDAR -->
+  <div class="grid2">
+    <div class="panel" style="animation-delay:0.4s">
+      <div class="panel-title">Upcoming Tours <span id="upcoming-count"></span></div>
+      <div id="upcoming-list">
+        <div style="color:var(--mist);font-size:12px;text-align:center;padding:20px">Loading...</div>
+      </div>
+    </div>
+    <div class="panel" style="animation-delay:0.45s">
+      <div class="panel-title">Monthly Calendar <span id="cal-month-label"></span></div>
+      <div>
+        <div class="month-grid" id="month-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WINDY WEATHER -->
+  <div class="panel" style="animation-delay:0.5s;margin-bottom:20px">
+    <div class="panel-title">Weather · Boka Bay</div>
+    <div class="windy-wrap">
+      <iframe
+        width="100%"
+        height="450"
+        src="https://embed.windy.com/embed2.html?lat=42.43&lon=18.77&detailLat=42.43&detailLon=18.77&width=650&height=450&zoom=10&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=bft&metricTemp=%C2%B0C&radarRange=-1"
+        frameborder="0"
+        style="border:none;">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+var API_KEY = 'AIzaSyA1ED8-o5l9KyAURHNVUOR8gSt2kL-Lh0w';
+var CAL_ID  = 'brooklyncattaro@gmail.com';
+var MONTHS  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+var BASE = 'https://maurofiore24.github.io/speedboatchatform/';
+var BG_IMAGES = [
+  BASE + 'Screenshot%20From%202026-03-13%2019-53-16.png',
+  BASE + 'Screenshot%20From%202026-03-13%2023-01-03.png',
+  BASE + 'Screenshot%20From%202026-03-13%2019-56-19.png',
+  BASE + 'Screenshot%20From%202026-03-13%2023-01-25.png',
+  BASE + 'Screenshot%20From%202026-03-13%2019-56-54.png',
+  BASE + 'Screenshot%20From%202026-03-13%2023-04-16.png',
+];
+var bgActive = 0, bgInterval = null;
+
+function initBg() {
+  document.getElementById('bg-0').style.backgroundImage = 'url("' + BG_IMAGES[0] + '")';
+  document.getElementById('bg-0').classList.add('active');
+  bgInterval = setInterval(rotateBg, 6000);
+}
+
+function rotateBg() {
+  var next = 1 - bgActive;
+  var nextIdx = (BG_IMAGES.indexOf(
+    document.getElementById('bg-' + bgActive).style.backgroundImage.replace(/url\(["']?|["']?\)/g,'')
+  ) + 1) % BG_IMAGES.length;
+  document.getElementById('bg-' + next).style.backgroundImage = 'url("' + BG_IMAGES[nextIdx] + '")';
+  document.getElementById('bg-' + bgActive).classList.remove('active');
+  document.getElementById('bg-' + next).classList.add('active');
+  bgActive = next;
+}
+
+// ── MUSIC ────────────────────────────────────────────────────
+var musicPlaying = false;
+
+function playMilestoneMusic() {
+  var audio = document.getElementById('milestone-audio');
+  var bar = document.getElementById('music-bar');
+  audio.currentTime = 0;
+  audio.volume = 0;
+  audio.play().then(function() {
+    musicPlaying = true;
+    bar.classList.add('show');
+    var step = 0;
+    var iv = setInterval(function() {
+      step++;
+      audio.volume = Math.min(0.65, step / 30 * 0.65);
+      if (audio.volume >= 0.65) clearInterval(iv);
+    }, 100);
+  }).catch(function(){});
+}
+
+function toggleMusic() {
+  var audio = document.getElementById('milestone-audio');
+  var bar = document.getElementById('music-bar');
+  var lbl = document.getElementById('music-bar-label');
+  if (audio.paused) {
+    audio.play(); bar.classList.remove('paused'); lbl.textContent = 'Now playing';
+  } else {
+    audio.pause(); bar.classList.add('paused'); lbl.textContent = 'Paused';
+  }
+}
+
+// ── CONFETTI ─────────────────────────────────────────────────
+var CONFETTI_COLORS = ['#c9a84c','#e8c97a','#1db87e','#f0ebe0','#e07b30','#4cb5c9'];
+function launchConfetti() {
+  for (var i = 0; i < 80; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.top = '-10px';
+        el.style.background = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+        el.style.width = (6 + Math.random() * 8) + 'px';
+        el.style.height = (6 + Math.random() * 8) + 'px';
+        el.style.animationDuration = (2 + Math.random() * 2) + 's';
+        el.style.animationDelay = (Math.random() * 0.5) + 's';
+        el.style.borderRadius = Math.random() > 0.5 ? '50%' : '1px';
+        document.body.appendChild(el);
+        setTimeout(function() { el.remove(); }, 4000);
+      }, i * 30);
+    })(i);
+  }
+}
+
+// ── MILESTONE ────────────────────────────────────────────────
+var MILESTONE = 5000;
+var milestoneTriggered = false;
+var currentRevenue = 0;
+
+function checkMilestone() {
+  if (currentRevenue >= MILESTONE) {
+    showCelebration(currentRevenue);
+  }
+}
+
+function showCelebration(revenue) {
+  document.getElementById('celebration-amount').textContent = fmtEuro(revenue) + ' projected';
+  document.getElementById('celebration').classList.add('show');
+  launchConfetti();
+  playMilestoneMusic();
+}
+
+function closeCelebration() {
+  document.getElementById('celebration').classList.remove('show');
+}
+
+var currentPeriod = 'week';
+var allEvents = [];
+
+// ── PRICING ──────────────────────────────────────────────────
+// Parse price from event description or estimate from duration
+function estimateRevenue(durationMin) {
+  if (durationMin <= 0) return 0;
+  var h = Math.ceil(durationMin / 60);
+  if (h < 1) h = 1;
+  // Use charter pricing as default estimate (conservative)
+  var base = {1:400,2:450,3:550,4:600,5:700,6:800,7:900,8:1000}[Math.min(h,8)] || 1000;
+  var fuel = h * 50;
+  return base + fuel;
+}
+
+// Try to parse price from description "€600" or "600 EUR"
+function parsePrice(desc) {
+  var m = desc.match(/[€$]?\s*(\d{3,4})\s*(eur|€)?/i);
+  return m ? parseInt(m[1]) : null;
+}
+
+// ── PARSE EVENT ──────────────────────────────────────────────
+function parseEvent(ev) {
+  var dtRaw = ev.start.dateTime || ev.start.date;
+  var date  = dtRaw.substring(0, 10);
+  var desc  = (ev.description || '').trim();
+  var tours = [];
+
+  desc.split(/\n/).forEach(function(line) {
+    line = line.replace(/^[-\s]+/, '').trim();
+    var m = line.match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})\s*(.*)?/);
+    if (m) {
+      var startMin = parseInt(m[1])*60 + parseInt(m[2]);
+      var endMin   = parseInt(m[3])*60 + parseInt(m[4]);
+      var rest     = (m[5] || '').trim();
+      var durationMin = endMin - startMin;
+      var priceFromDesc = parsePrice(rest);
+      tours.push({
+        date:        date,
+        startMin:    startMin,
+        endMin:      endMin,
+        durationMin: durationMin,
+        station:     rest.replace(/[€\d\s€EUR]+/g, '').trim() || '—',
+        revenue:     priceFromDesc || estimateRevenue(durationMin),
+        estimated:   !priceFromDesc,
+        raw:         line
+      });
+    }
+  });
+
+  // If no parseable lines, treat whole event as one tour
+  if (!tours.length && ev.start.dateTime) {
+    var s = new Date(ev.start.dateTime);
+    var e = new Date(ev.end.dateTime);
+    var dMin = Math.round((e - s) / 60000);
+    var price = parsePrice(desc);
+    tours.push({
+      date:        date,
+      startMin:    s.getHours()*60+s.getMinutes(),
+      endMin:      e.getHours()*60+e.getMinutes(),
+      durationMin: dMin,
+      station:     '—',
+      revenue:     price || estimateRevenue(dMin),
+      estimated:   !price,
+      raw:         ev.summary || ''
+    });
+  }
+  return tours;
+}
+
+// ── PERIOD HELPERS ───────────────────────────────────────────
+function getPeriodRange() {
+  var now = new Date();
+  var start, end;
+  if (currentPeriod === 'week') {
+    var dow = now.getDay();
+    start = new Date(now); start.setDate(now.getDate() - dow); start.setHours(0,0,0,0);
+    end   = new Date(start); end.setDate(start.getDate() + 7);
+  } else if (currentPeriod === 'month') {
+    start = new Date(now.getFullYear(), now.getMonth(), 1);
+    end   = new Date(now.getFullYear(), now.getMonth()+1, 1);
+  } else { // season
+    start = new Date(now.getFullYear(), 3, 1);  // Apr 1
+    end   = new Date(now.getFullYear(), 10, 1); // Nov 1
+  }
+  return { start: start, end: end };
+}
+
+function toursInPeriod(tours) {
+  var range = getPeriodRange();
+  return tours.filter(function(t) {
+    var d = new Date(t.date);
+    return d >= range.start && d < range.end;
+  });
+}
+
+function fmt(min) {
+  return String(Math.floor(min/60)).padStart(2,'0') + ':' + String(min%60).padStart(2,'0');
+}
+function fmtDate(dk) {
+  var p = dk.split('-');
+  return p[2] + ' ' + MONTHS_SHORT[parseInt(p[1])-1];
+}
+function fmtEuro(n) {
+  return '€' + n.toLocaleString('de-DE');
+}
+
+// ── RENDER KPIs ──────────────────────────────────────────────
+function renderKPIs(tours) {
+  var range = getPeriodRange();
+  var inPeriod = toursInPeriod(tours);
+  var totalRev = inPeriod.reduce(function(s,t){ return s+t.revenue; }, 0);
+  var totalMin = inPeriod.reduce(function(s,t){ return s+t.durationMin; }, 0);
+  var bookedDays = [...new Set(inPeriod.map(function(t){return t.date;}))].length;
+  var avgDur = inPeriod.length ? Math.round(totalMin / inPeriod.length) : 0;
+  var avgDaily = bookedDays ? Math.round(totalRev / bookedDays) : 0;
+  var estCount = inPeriod.filter(function(t){return t.estimated;}).length;
+  var estNote = estCount ? ' (~' + estCount + ' est.)' : '';
+
+  currentRevenue = totalRev;
+
+  // Milestone badge
+  var badge = document.getElementById('milestone-badge');
+  if (totalRev >= MILESTONE) {
+    badge.classList.add('show');
+    if (!milestoneTriggered) {
+      milestoneTriggered = true;
+      setTimeout(function() { showCelebration(totalRev); }, 800);
+    }
+  } else {
+    badge.classList.remove('show');
+    milestoneTriggered = false;
+  }
+
+  document.getElementById('kpi-revenue').textContent = fmtEuro(totalRev);
+  document.getElementById('kpi-revenue-sub').textContent = inPeriod.length + ' tours' + estNote;
+  document.getElementById('kpi-tours').textContent = inPeriod.length;
+  document.getElementById('kpi-tours-sub').textContent = bookedDays + ' booked days';
+  document.getElementById('kpi-hours').textContent = (totalMin/60).toFixed(1) + 'h';
+  document.getElementById('kpi-hours-sub').textContent = Math.round(totalMin) + ' total minutes';
+  document.getElementById('kpi-avg').textContent = avgDur ? (avgDur/60).toFixed(1) + 'h' : '—';
+  document.getElementById('kpi-avg-sub').textContent = avgDur ? avgDur + ' min avg' : 'no data';
+  document.getElementById('kpi-daily').textContent = avgDaily ? fmtEuro(avgDaily) : '—';
+  document.getElementById('kpi-daily-sub').textContent = 'per booked day';
+}
+
+// ── RENDER DAY BARS ──────────────────────────────────────────
+function renderDayBars(tours) {
+  var range = getPeriodRange();
+  var inPeriod = toursInPeriod(tours);
+
+  // Group by date
+  var byDate = {};
+  inPeriod.forEach(function(t) {
+    byDate[t.date] = (byDate[t.date] || 0) + t.revenue;
+  });
+
+  var entries = Object.keys(byDate).sort();
+  if (!entries.length) {
+    document.getElementById('day-bars').innerHTML = '<div class="booking-empty">No bookings in this period</div>';
+    return;
+  }
+
+  var max = Math.max.apply(null, entries.map(function(d){ return byDate[d]; }));
+  var label = currentPeriod === 'week' ? 'This Week' : currentPeriod === 'month' ? 'This Month' : 'Season';
+  document.getElementById('bar-period-label').textContent = label;
+
+  var html = '';
+  entries.forEach(function(dk) {
+    var pct = max > 0 ? (byDate[dk] / max * 100) : 0;
+    html += '<div class="day-bar-row">'
+      + '<div class="day-bar-label">' + fmtDate(dk) + '</div>'
+      + '<div class="day-bar-track"><div class="day-bar-fill" style="width:' + pct + '%"></div></div>'
+      + '<div class="day-bar-val">' + fmtEuro(byDate[dk]) + '</div>'
+      + '</div>';
+  });
+  document.getElementById('day-bars').innerHTML = html;
+}
+
+// ── RENDER STATIONS ──────────────────────────────────────────
+function renderStations(tours) {
+  var inPeriod = toursInPeriod(tours);
+  var counts = {};
+  inPeriod.forEach(function(t) {
+    if (t.station && t.station !== '—') counts[t.station] = (counts[t.station]||0) + 1;
+  });
+  var entries = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; }).slice(0,8);
+  if (!entries.length) {
+    document.getElementById('station-grid').innerHTML = '<div class="booking-empty">No station data.<br>Add stations to calendar descriptions.</div>';
+    return;
+  }
+  var max = Math.max.apply(null, entries.map(function(s){ return counts[s]; }));
+  var html = '';
+  entries.forEach(function(s) {
+    var pct = max > 0 ? (counts[s] / max * 100) : 0;
+    html += '<div class="station-row">'
+      + '<div class="station-name">' + s + '</div>'
+      + '<div class="station-bar-track"><div class="station-bar-fill" style="width:' + pct + '%"></div></div>'
+      + '<div class="station-count">' + counts[s] + '</div>'
+      + '</div>';
+  });
+  document.getElementById('station-grid').innerHTML = html;
+}
+
+// ── RENDER UPCOMING ──────────────────────────────────────────
+function renderUpcoming(tours) {
+  var today = new Date(); today.setHours(0,0,0,0);
+  var upcoming = tours.filter(function(t) {
+    return new Date(t.date) >= today;
+  }).sort(function(a,b) {
+    if (a.date !== b.date) return a.date > b.date ? 1 : -1;
+    return a.startMin - b.startMin;
+  }).slice(0, 12);
+
+  document.getElementById('upcoming-count').textContent = upcoming.length + ' tours';
+
+  if (!upcoming.length) {
+    document.getElementById('upcoming-list').innerHTML = '<div class="booking-empty">No upcoming bookings found</div>';
+    return;
+  }
+  var html = '';
+  upcoming.forEach(function(t) {
+    html += '<div class="booking-row">'
+      + '<div class="booking-date">' + fmtDate(t.date) + '</div>'
+      + '<div class="booking-times">' + fmt(t.startMin) + '–' + fmt(t.endMin) + '</div>'
+      + '<div class="booking-station">' + (t.station !== '—' ? t.station : '') + '</div>'
+      + '<div class="booking-duration">' + (t.durationMin/60).toFixed(1) + 'h</div>'
+      + '<div class="booking-price">' + fmtEuro(t.revenue) + (t.estimated ? '<span style="font-size:9px;color:var(--mist)">~</span>' : '') + '</div>'
+      + '</div>';
+  });
+  document.getElementById('upcoming-list').innerHTML = html;
+}
+
+// ── RENDER MONTH CALENDAR ────────────────────────────────────
+function renderMonthCal(tours) {
+  var now = new Date();
+  var year = now.getFullYear(), month = now.getMonth();
+  document.getElementById('cal-month-label').textContent = MONTHS[month] + ' ' + year;
+
+  var byDate = {};
+  tours.forEach(function(t) { byDate[t.date] = true; });
+
+  var grid = document.getElementById('month-grid');
+  grid.innerHTML = '';
+  DAYS_SHORT.forEach(function(d) {
+    var el = document.createElement('div'); el.className = 'mg-dow'; el.textContent = d; grid.appendChild(el);
+  });
+
+  var firstDay = new Date(year, month, 1).getDay();
+  var totalDays = new Date(year, month+1, 0).getDate();
+  var today = new Date(); today.setHours(0,0,0,0);
+
+  for (var i = 0; i < firstDay; i++) {
+    var e = document.createElement('div'); e.className = 'mg-day empty'; grid.appendChild(e);
+  }
+  for (var d = 1; d <= totalDays; d++) {
+    var dk = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    var cellDate = new Date(year, month, d);
+    var el = document.createElement('div');
+    el.className = 'mg-day';
+    el.innerHTML = '<span class="mg-day-num">' + d + '</span>';
+    if (cellDate < today) el.classList.add('past');
+    else if (cellDate.toDateString() === today.toDateString()) el.classList.add('today');
+    if (byDate[dk]) {
+      el.classList.add('booked');
+      el.innerHTML += '<div class="mg-day-dot"></div>';
+    } else if (cellDate >= today) {
+      el.classList.add('free');
+    }
+    grid.appendChild(el);
+  }
+}
+
+// ── LOAD FROM GOOGLE CALENDAR ────────────────────────────────
+function loadAll() {
+  document.getElementById('last-updated').textContent = 'Loading...';
+  document.getElementById('error-notice').style.display = 'none';
+
+  var now = new Date();
+  var tMin = new Date(now.getFullYear(), 0, 1).toISOString();
+  var tMax = new Date(now.getFullYear() + 1, 11, 31).toISOString();
+
+  var url = 'https://www.googleapis.com/calendar/v3/calendars/'
+    + encodeURIComponent(CAL_ID) + '/events?key=' + API_KEY
+    + '&timeMin=' + encodeURIComponent(tMin)
+    + '&timeMax=' + encodeURIComponent(tMax)
+    + '&singleEvents=true&orderBy=startTime&maxResults=500';
+
+  fetch(url)
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(data) {
+      if (data.error) throw new Error(data.error.message);
+      allEvents = [];
+      (data.items || []).forEach(function(ev) {
+        parseEvent(ev).forEach(function(t) { allEvents.push(t); });
+      });
+      renderAll();
+      var t = new Date();
+      document.getElementById('last-updated').textContent =
+        'Updated ' + String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0');
+    })
+    .catch(function(err) {
+      var notice = document.getElementById('error-notice');
+      notice.textContent = '⚠ Could not load calendar: ' + err.message + '. Check API key or calendar permissions.';
+      notice.style.display = 'block';
+      document.getElementById('last-updated').textContent = 'Error';
+    });
+}
+
+function renderAll() {
+  renderKPIs(allEvents);
+  renderDayBars(allEvents);
+  renderStations(allEvents);
+  renderUpcoming(allEvents);
+  renderMonthCal(allEvents);
+}
+
+function setPeriod(p) {
+  currentPeriod = p;
+  document.querySelectorAll('.period-tab').forEach(function(el) {
+    el.classList.toggle('active', el.textContent.toLowerCase().indexOf(p) >= 0 || 
+      (p === 'season' && el.textContent.indexOf('Season') >= 0));
+  });
+  renderAll();
+}
+
+// Boot
+initBg();
+loadAll();
+</script>
+</body>
+</html>
