@@ -427,7 +427,7 @@
     <div class="time-picker-grid">
       <div class="time-spinner">
         <div class="time-spinner-label">Hour</div>
-        <div class="time-spinner-box">
+        <div class="time-spinner-box" id="sh-hour-box">
           <button class="time-spinner-btn" onclick="changeStart('h',1)">▲</button>
           <div class="time-spinner-val" id="sh-hour">09</div>
           <button class="time-spinner-btn" onclick="changeStart('h',-1)">▼</button>
@@ -436,10 +436,10 @@
       <div class="time-sep">:</div>
       <div class="time-spinner">
         <div class="time-spinner-label">Min</div>
-        <div class="time-spinner-box">
-          <button class="time-spinner-btn" onclick="changeStart('m',1)">▲</button>
+        <div class="time-spinner-box" id="sh-min-box">
+          <button class="time-spinner-btn" onclick="changeStart('m',5)">▲</button>
           <div class="time-spinner-val" id="sh-min">00</div>
-          <button class="time-spinner-btn" onclick="changeStart('m',-1)">▼</button>
+          <button class="time-spinner-btn" onclick="changeStart('m',-5)">▼</button>
         </div>
       </div>
       <div class="time-status-box">
@@ -466,7 +466,7 @@
     <div class="time-picker-grid">
       <div class="time-spinner">
         <div class="time-spinner-label">Hour</div>
-        <div class="time-spinner-box">
+        <div class="time-spinner-box" id="eh-hour-box">
           <button class="time-spinner-btn" onclick="changeEnd('h',1)">▲</button>
           <div class="time-spinner-val" id="eh-hour">10</div>
           <button class="time-spinner-btn" onclick="changeEnd('h',-1)">▼</button>
@@ -475,10 +475,10 @@
       <div class="time-sep">:</div>
       <div class="time-spinner">
         <div class="time-spinner-label">Min</div>
-        <div class="time-spinner-box">
-          <button class="time-spinner-btn" onclick="changeEnd('m',1)">▲</button>
+        <div class="time-spinner-box" id="eh-min-box">
+          <button class="time-spinner-btn" onclick="changeEnd('m',5)">▲</button>
           <div class="time-spinner-val" id="eh-min">00</div>
-          <button class="time-spinner-btn" onclick="changeEnd('m',-1)">▼</button>
+          <button class="time-spinner-btn" onclick="changeEnd('m',-5)">▼</button>
         </div>
       </div>
       <div class="time-status-box">
@@ -776,16 +776,21 @@ function onPickupChange() {
 
   if (!selectedPickup) { btn.disabled = true; info.style.display = 'none'; return; }
 
-  // Calculate earliest start based on last tour end
   var prevEndStation = getLastTourEndStation();
   var prevEndMin     = getLastTourEndMin();
   minStartMin = earliestStart(selectedPickup, prevEndStation, prevEndMin);
 
-  if (minStartMin > 0 && prevEndStation && prevEndStation !== selectedPickup) {
-    var travelNeeded = minStartMin - prevEndMin;
+  if (prevEndMin >= 0 && prevEndStation) {
     var eH = String(Math.floor(minStartMin/60)).padStart(2,'0');
     var eM = String(minStartMin%60).padStart(2,'0');
-    info.textContent = '⚓ Previous tour ends at ' + prevEndStation + '. Travel time: ~' + travelNeeded + ' min. Earliest departure: ' + eH + ':' + eM;
+    var prevEH = String(Math.floor(prevEndMin/60)).padStart(2,'0');
+    var prevEM = String(prevEndMin%60).padStart(2,'0');
+    if (prevEndStation === selectedPickup) {
+      info.textContent = '⚓ Previous tour ends here at ' + prevEH + ':' + prevEM + '. Earliest departure: ' + eH + ':' + eM + ' (+3 min prep)';
+    } else {
+      var travelMin = minStartMin - prevEndMin;
+      info.textContent = '🚤 Last tour ends at ' + prevEndStation + ' (' + prevEH + ':' + prevEM + '). Transit ~' + travelMin + ' min → earliest departure from ' + selectedPickup + ': ' + eH + ':' + eM;
+    }
     info.style.display = 'block';
   } else {
     info.style.display = 'none';
@@ -834,12 +839,21 @@ function parseRangesWithStation(dk) {
       line = line.replace(/^[-\s]+/, '').trim();
       var m = line.match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})\s*(.*)?/);
       if (m) {
-        var endStationRaw = (m[5] || '').trim();
-        // Try to match to a known station
+        var endStationRaw = (m[5] || '').trim().toLowerCase();
         var endStation = null;
+        // Try full name match first, then partial
         STATIONS.forEach(function(s) {
-          if (endStationRaw.toLowerCase().indexOf(s.toLowerCase().split(' ')[0]) >= 0) endStation = s;
+          if (endStationRaw === s.toLowerCase()) endStation = s;
         });
+        if (!endStation) {
+          STATIONS.forEach(function(s) {
+            if (endStation) return;
+            // Match all words of station name
+            var words = s.toLowerCase().split(' ');
+            var allMatch = words.every(function(w) { return endStationRaw.indexOf(w) >= 0; });
+            if (allMatch) endStation = s;
+          });
+        }
         ranges.push({
           start: parseInt(m[1])*60 + parseInt(m[2]),
           end:   parseInt(m[3])*60 + parseInt(m[4]),
@@ -895,6 +909,38 @@ function selectCalDate(dateKey) {
 var isTouch = false;
 document.addEventListener('touchstart', function() { isTouch = true; }, { once: true });
 document.getElementById('step-0').classList.add('active');
+
+// ─── SCROLL / SWIPE ON SPINNERS ──────────────────────────────
+function addWheelScroll(id, fn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    fn(e.deltaY > 0 ? -1 : 1);
+  }, { passive: false });
+}
+function addTouchSwipe(id, fn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var startY = null;
+  el.addEventListener('touchstart', function(e) { startY = e.touches[0].clientY; }, { passive: true });
+  el.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
+  el.addEventListener('touchend', function(e) {
+    if (startY === null) return;
+    var dy = startY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 8) fn(dy > 0 ? 1 : -1);
+    startY = null;
+  }, { passive: true });
+}
+// Hours: step 1, Minutes: step 5
+addWheelScroll('sh-hour-box', function(d) { changeStart('h', d); });
+addTouchSwipe ('sh-hour-box', function(d) { changeStart('h', d); });
+addWheelScroll('sh-min-box',  function(d) { changeStart('m', d * 5); });
+addTouchSwipe ('sh-min-box',  function(d) { changeStart('m', d * 5); });
+addWheelScroll('eh-hour-box', function(d) { changeEnd('h', d); });
+addTouchSwipe ('eh-hour-box', function(d) { changeEnd('h', d); });
+addWheelScroll('eh-min-box',  function(d) { changeEnd('m', d * 5); });
+addTouchSwipe ('eh-min-box',  function(d) { changeEnd('m', d * 5); });
 
 // ─── CALENDAR ────────────────────────────────────────────────
 function toggleCal() {
@@ -1051,8 +1097,11 @@ function renderCal() {
 
 // ─── START TIME PICKER ────────────────────────────────────────
 function changeStart(part, dir) {
-  if (part === 'h') { shHour = (shHour + dir + 24) % 24; }
-  else { shMin = ((shMin + dir) + 60) % 60; }
+  if (part === 'h') {
+    shHour = (shHour + dir + 24) % 24;
+  } else {
+    shMin = (Math.round(shMin / 5) * 5 + dir + 60) % 60;
+  }
   updateStartPicker();
 }
 
@@ -1100,8 +1149,11 @@ function confirmStart() {
 
 // ─── END TIME PICKER ─────────────────────────────────────────
 function changeEnd(part, dir) {
-  if (part === 'h') { ehHour = (ehHour + dir + 24) % 24; }
-  else { ehMin = ((ehMin + dir) + 60) % 60; }
+  if (part === 'h') {
+    ehHour = (ehHour + dir + 24) % 24;
+  } else {
+    ehMin = (Math.round(ehMin / 5) * 5 + dir + 60) % 60;
+  }
   updateEndPicker();
 }
 
