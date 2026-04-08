@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lola Boat Rent Montenegro — Info & Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:    #080f1c;
+  --deep:   #0d1826;
+  --panel:  #111f35;
+  --lift:   #172844;
+  --rim:    rgba(195,158,72,0.2);
+  --gold:   #c39e48;
+  --gold2:  #dfc06e;
+  --sea:    #1c9272;
+  --sea2:   #28c496;
+  --ember:  #c85c2c;
+  --ember2: #e8804e;
+  --cream:  #ede8d8;
+  --fog:    #7a90aa;
+  --fog2:   #a0b8d0;
+  --white:  #fff;
+  --r:      3px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--ink);
+  color: var(--cream);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SHARED ── */
+.container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.chip-gold  { background: rgba(195,158,72,0.15); color: var(--gold2); border: 1px solid rgba(195,158,72,0.3); }
+.chip-sea   { background: rgba(28,146,114,0.15); color: var(--sea2); border: 1px solid rgba(40,196,150,0.3); }
+.chip-ember { background: rgba(200,92,44,0.15); color: var(--ember2); border: 1px solid rgba(200,92,44,0.3); }
+.chip-fog   { background: rgba(122,144,170,0.12); color: var(--fog2); border: 1px solid rgba(122,144,170,0.2); }
+
+.section-eyebrow {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  opacity: 0.85;
+}
+.section-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px,4vw,42px);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.section-heading em { color: var(--gold); font-style: italic; }
+.section-sub { font-size: 14px; color: var(--fog); font-weight: 400; line-height: 1.6; }
+
+.divider-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rim), transparent);
+  margin: 56px 0;
+}
+
+/* copy toast */
+.toast {
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--panel);
+  border: 1px solid var(--rim);
+  border-radius: 30px;
+  padding: 10px 22px;
+  font-size: 12px;
+  color: var(--gold2);
+  letter-spacing: 0.06em;
+  z-index: 999;
+  transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ══════════════════════════════════════════
+   TOPNAV
+══════════════════════════════════════════ */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: rgba(8,15,28,0.92);
+  border-bottom: 1px solid var(--rim);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.topnav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--cream);
+}
+.nav-brand-name em { color: var(--gold); font-style: italic; }
+.nav-links {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fog);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a.active { color: var(--gold); }
+/* tab pills for manager sections */
+.nav-tool-tabs {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.nav-tool-tab {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fog);
+  padding: 6px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'Syne', sans-serif;
+  transition: all 0.2s;
+}
+.nav-tool-tab:hover { color: var(--cream); }
+.nav-tool-tab.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 90px 24px 80px;
+  text-align: center;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(28,146,114,0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 20% 0%, rgba(195,158,72,0.1) 0%, transparent 50%),
+    linear-gradient(160deg, #080f1c 0%, #0d1e35 60%, #080f1c 100%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(195,158,72,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(195,158,72,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.hero-content { position: relative; z-index: 1; max-width: 660px; margin: 0 auto; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(195,158,72,0.08);
+  border: 1px solid rgba(195,158,72,0.25);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+.hero-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sea2); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px,7vw,72px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+.hero-title em { color: var(--gold); font-style: italic; }
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--fog);
+  font-weight: 400;
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto 36px;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ══════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border-radius: var(--r);
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--ink);
+  box-shadow: 0 4px 20px rgba(195,158,72,0.25);
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(195,158,72,0.35); }
+.btn-wa {
+  background: #25D366;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(37,211,102,0.25);
+}
+.btn-wa:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.35); }
+.btn-ig {
+  background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(220,39,67,0.2);
+}
+.btn-ig:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(220,39,67,0.3); }
+.btn-ghost {
+  background: rgba(195,158,72,0.08);
+  border: 1px solid var(--rim);
+  color: var(--gold);
+}
+.btn-ghost:hover { background: rgba(195,158,72,0.15); border-color: rgba(195,158,72,0.45); }
+.btn-sm { padding: 8px 16px; font-size: 10px; }
+
+/* ══════════════════════════════════════════
+   QUICK INFO CARDS (always visible)
+══════════════════════════════════════════ */
+.info-strip {
+  background: var(--panel);
+  border-top: 1px solid var(--rim);
+  border-bottom: 1px solid var(--rim);
+  padding: 28px 0;
+}
+.info-strip-inner {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 1px;
+  background: var(--rim);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+@media(max-width:700px) { .info-strip-inner { grid-template-columns: repeat(2,1fr); } }
+@media(max-width:380px) { .info-strip-inner { grid-template-columns: 1fr; } }
+
+.info-item {
+  background: var(--panel);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.info-icon { font-size: 24px; margin-bottom: 4px; }
+.info-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+.info-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.1;
+}
+.info-note { font-size: 11px; color: var(--fog); font-weight: 400; }
+
+/* ══════════════════════════════════════════
+   PRICING SECTION
+══════════════════════════════════════════ */
+.pricing-section { padding: 72px 0; }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 36px;
+}
+@media(max-width:600px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+.pricing-card {
+  background: var(--panel);
+  border: 1px solid var(--rim);
+  border-radius: var(--r);
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.pricing-card:hover {
+  border-color: rgba(195,158,72,0.4);
+  box-shadow: 0 0 40px rgba(195,158,72,0.06);
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.pricing-card.wedding::before { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+.pricing-card.charter::before { background: linear-gradient(90deg, var(--sea), var(--sea2)); }
+
+.pricing-type-icon { font-size: 32px; margin-bottom: 12px; }
+.pricing-type-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 18px;
+}
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(122,144,170,0.08);
+  font-size: 13px;
+}
+.pricing-row:last-child { border-bottom: none; }
+.pricing-key { color: var(--fog); }
+.pricing-val { font-weight: 600; color: var(--cream); }
+.pricing-val.gold { color: var(--gold); }
+.pricing-val.sea  { color: var(--sea2); }
+
+.pricing-disclaimer {
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: rgba(195,158,72,0.05);
+  border: 1px solid rgba(195,158,72,0.15);
+  border-radius: 2px;
+  font-size: 11px;
+  color: var(--fog);
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════
+   FAQ
+══════════════════════════════════════════ */
+.faq-section { padding: 72px 0; }
+
+.faq-grid { margin-top: 36px; display: flex; flex-direction: column; gap: 0; }
+.faq-item {
+  border-bottom: 1px solid rgba(122,144,170,0.12);
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--cream);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  text-align: left;
+  padding: 20px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  transition: color 0.2s;
+}
+.faq-question:hover { color: var(--gold); }
+.faq-q-text { flex: 1; }
+.faq-chevron {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  color: var(--gold);
+  transition: transform 0.3s;
+}
+.faq-item.open .faq-chevron { transform: rotate(45deg); }
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.faq-answer-inner {
+  font-size: 14px;
+  color: var(--fog2);
+  line-height: 1.7;
+  padding-bottom: 20px;
+  padding-right: 34px;
+}
+.faq-item.open .faq-answer { max-height: 200px; }
+
+/* ══════════════════════════════════════════
+   CTA SECTION (prefilled messages)
+══════════════════════════════════════════ */
+.cta-section { padding: 72px 0; }
+
+.cta-card {
+  background: var(--panel);
+  border: 1px solid var(--rim);
+  border-radius: var(--r);
+  padding: 40px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-card::before {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: 50%;
+  transform: translateX(-50%);
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(28,146,114,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 10px;
+}
+.cta-title em { color: var(--gold); font-style: italic; }
+.cta-sub { font-size: 13px; color: var(--fog); margin-bottom: 10px; }
+.cta-message-preview {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(122,144,170,0.18);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--cream);
+  font-style: italic;
+  margin: 18px auto;
+  max-width: 420px;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+.cta-message-preview strong { color: var(--gold2); font-style: normal; }
+.cta-note { font-size: 11px; color: var(--fog); margin-top: 10px; opacity: 0.7; position: relative; z-index: 1; }
+.cta-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════════
+   MANAGER SECTION
+══════════════════════════════════════════ */
+.manager-section {
+  background: var(--deep);
+  border-top: 1px solid var(--rim);
+  padding: 72px 0 90px;
+}
+
+.mgr-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--rim);
+  margin: 36px 0 32px;
+  overflow-x: auto;
+  padding-bottom: 0;
+}
+.mgr-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--fog);
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 10px 18px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+}
+.mgr-tab:hover { color: var(--cream); }
+.mgr-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.mgr-tab-content { display: none; }
+.mgr-tab-content.active { display: block; animation: fadeSlide 0.3s ease both; }
+@keyframes fadeSlide { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* ─── DM DECISION TREE ─── */
+.tree-intro {
+  background: rgba(195,158,72,0.06);
+  border: 1px solid rgba(195,158,72,0.2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--fog2);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.tree-intro strong { color: var(--gold2); }
+
+.tree-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media(max-width:720px) { .tree-grid { grid-template-columns: 1fr; } }
+
+.scenario-card {
+  background: var(--panel);
+  border: 1px solid var(--rim);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.scenario-card:hover { border-color: rgba(195,158,72,0.4); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+
+.scenario-head {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--rim);
+}
+.scenario-number {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fog);
+  margin-bottom: 6px;
+}
+.scenario-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+.scenario-signals { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+
+.scenario-body { padding: 16px 20px; }
+.scenario-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fog);
+  margin-bottom: 8px;
+}
+
+.reply-template {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(122,144,170,0.15);
+  border-radius: 2px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--cream);
+  line-height: 1.65;
+  white-space: pre-wrap;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.01em;
+  position: relative;
+  margin-bottom: 10px;
+}
+.reply-template .placeholder {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.btn-copy-reply {
+  width: 100%;
+  padding: 9px;
+  background: rgba(195,158,72,0.1);
+  border: 1px solid rgba(195,158,72,0.25);
+  border-radius: 2px;
+  color: var(--gold);
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-copy-reply:hover { background: rgba(195,158,72,0.2); border-color: rgba(195,158,72,0.5); }
+.btn-copy-reply.copied { background: rgba(28,146,114,0.15); border-color: rgba(40,196,150,0.4); color: var(--sea2); }
+
+.handover-note {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--fog);
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  line-height: 1.5;
+}
+.handover-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sea2); margin-top: 4px; flex-shrink: 0; }
+
+/* ─── AUTO-REPLY GUIDE ─── */
+.guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media(max-width:640px) { .guide-grid { grid-template-columns: 1fr; } }
+
+.guide-card {
+  background: var(--panel);
+  border: 1px solid var(--rim);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.guide-card-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--rim);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.guide-platform-icon { font-size: 24px; }
+.guide-platform-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--cream);
+  font-weight: 400;
+}
+.guide-card-body { padding: 18px 20px; }
+
+.guide-steps { display: flex; flex-direction: column; gap: 0; }
+.guide-step {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(122,144,170,0.08);
+}
+.guide-step:last-child { border-bottom: none; }
+.guide-step-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(195,158,72,0.12);
+  border: 1px solid rgba(195,158,72,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.guide-step-text { font-size: 13px; color: var(--fog2); line-height: 1.5; }
+.guide-step-text strong { color: var(--cream); }
+.guide-step-text code {
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  padding: 1px 5px;
+  font-size: 11px;
+  color: var(--gold2);
+  font-family: monospace;
+}
+
+.auto-reply-text {
+  margin-top: 16px;
+}
+.auto-reply-text-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fog);
+  margin-bottom: 8px;
+}
+.auto-reply-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(122,144,170,0.15);
+  border-radius: 2px;
+  padding: 14px;
+  font-size: 12px;
+  color: var(--cream);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  font-family: 'Cormorant Garamond', serif;
+}
+.keyword-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.kwt { background: rgba(40,196,150,0.1); border: 1px solid rgba(40,196,150,0.25); color: var(--sea2); padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+
+.warning-box {
+  margin-top: 28px;
+  background: rgba(200,92,44,0.07);
+  border: 1px solid rgba(200,92,44,0.25);
+  border-radius: var(--r);
+  padding: 14px 18px;
+}
+.warning-box-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ember2);
+  margin-bottom: 8px;
+}
+.warning-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.warning-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--fog2);
+}
+.warning-list li::before { content: '✕'; color: var(--ember2); flex-shrink: 0; font-weight: 700; }
+
+/* ─── QUICK LINKS / CHECKLIST ─── */
+.checklist-section { padding: 0 0 72px; }
+.checklist-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 28px; }
+@media(max-width:680px) { .checklist-grid { grid-template-columns: 1fr; } }
+.checklist-card {
+  background: var(--panel);
+  border: 1px solid var(--rim);
+  border-radius: var(--r);
+  padding: 20px;
+}
+.checklist-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(122,144,170,0.07);
+  font-size: 12px;
+  color: var(--fog2);
+  line-height: 1.4;
+}
+.checklist-item:last-child { border-bottom: none; }
+.ci-check { color: var(--sea2); font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+.footer {
+  background: var(--ink);
+  border-top: 1px solid var(--rim);
+  padding: 28px 24px;
+  text-align: center;
+}
+.footer-text { font-size: 11px; color: var(--fog); letter-spacing: 0.08em; }
+.footer-text a { color: var(--gold); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">✓ Copied to clipboard</div>
+
+<!-- ══════════════════════════════════
+     TOPNAV
+══════════════════════════════════ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="nav-brand">
+      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
+        <path d="M6 32 C10 28 14 26 24 26 C34 26 38 28 42 32" stroke="#c39e48" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M10 32 L8 38 H40 L38 32" stroke="#c39e48" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M24 26 L24 16 L32 22" stroke="#c39e48" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M24 16 L18 20" stroke="#c39e48" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="nav-brand-name"><em>Lola</em> Boat Rent</div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#book">Book</a></li>
+      <li><a href="#manager" class="active">Manager ↓</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+     HERO
+══════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Bay of Kotor · Montenegro
+    </div>
+    <h1 class="hero-title">Private <em>Speedboat</em><br>Tours &amp; Charters</h1>
+    <p class="hero-sub">Luxury private charters and wedding photoshoots on the most beautiful bay in the Adriatic. No license needed — just bring yourself.</p>
+    <div class="hero-ctas">
+      <a href="#book" class="btn btn-gold">Book Now</a>
+      <a href="#pricing" class="btn btn-ghost">See Pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     ALWAYS-VISIBLE INFO STRIP
+══════════════════════════════════ -->
+<div class="info-strip">
+  <div class="info-strip-inner">
+    <div class="info-item">
+      <div class="info-icon">⛵</div>
+      <div class="info-label">Max Capacity</div>
+      <div class="info-value">7 persons</div>
+      <div class="info-note">Lola speedboat</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">📍</div>
+      <div class="info-label">Pickup</div>
+      <div class="info-value">Kotor Riva</div>
+      <div class="info-note">+ 9 other stations</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">🪪</div>
+      <div class="info-label">License Required</div>
+      <div class="info-value" style="color:var(--sea2)">NO</div>
+      <div class="info-note">Captain included</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">💰</div>
+      <div class="info-label">Price From</div>
+      <div class="info-value" style="color:var(--gold)">€400/hr</div>
+      <div class="info-note">Wedding &amp; photoshoot</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PRICING
+══════════════════════════════════ -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="section-eyebrow">Transparent Pricing</div>
+    <h2 class="section-heading">No hidden fees.<br><em>No surprises.</em></h2>
+    <p class="section-sub">All prices are per hour. The captain, boat, and any safety equipment are always included.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card wedding">
+        <div class="pricing-type-icon">💍</div>
+        <div class="pricing-type-name">Wedding &amp; Photoshoot</div>
+        <div class="pricing-row"><span class="pricing-key">Rate per hour</span><span class="pricing-val gold">€400</span></div>
+        <div class="pricing-row"><span class="pricing-key">Fuel</span><span class="pricing-val sea">Included</span></div>
+        <div class="pricing-row"><span class="pricing-key">Captain</span><span class="pricing-val sea">Included</span></div>
+        <div class="pricing-row"><span class="pricing-key">Minimum duration</span><span class="pricing-val">1 hour</span></div>
+        <div class="pricing-row"><span class="pricing-key">Typical booking</span><span class="pricing-val">2–4 hours</span></div>
+        <div class="pricing-row"><span class="pricing-key">Max persons</span><span class="pricing-val">7</span></div>
+        <div class="pricing-disclaimer">
+          Perfect for wedding photographers, engagements, and content creators. The captain will navigate to the most scenic spots on request.
+        </div>
+      </div>
+
+      <div class="pricing-card charter">
+        <div class="pricing-type-icon">⛵</div>
+        <div class="pricing-type-name">Private Charter</div>
+        <div class="pricing-row"><span class="pricing-key">Base rate per hour</span><span class="pricing-val gold">€450</span></div>
+        <div class="pricing-row"><span class="pricing-key">Fuel surcharge</span><span class="pricing-val" style="color:var(--ember2)">+ €50/hr</span></div>
+        <div class="pricing-row"><span class="pricing-key">Total per hour</span><span class="pricing-val gold">€500</span></div>
+        <div class="pricing-row"><span class="pricing-key">Captain</span><span class="pricing-val sea">Included</span></div>
+        <div class="pricing-row"><span class="pricing-key">Minimum duration</span><span class="pricing-val">2 hours</span></div>
+        <div class="pricing-row"><span class="pricing-key">Max persons</span><span class="pricing-val">7</span></div>
+        <div class="pricing-disclaimer">
+          Full flexibility — explore Perast, the Blue Cave, Herceg Novi, Porto Montenegro, or design your own route. Stops for swimming included.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-rule"></div>
+
+<!-- ══════════════════════════════════
+     FAQ
+══════════════════════════════════ -->
+<section class="faq-section" id="faq">
+  <div class="container">
+    <div class="section-eyebrow">Common Questions</div>
+    <h2 class="section-heading">Before you <em>ask us</em>…</h2>
+    <p class="section-sub">The five questions we get most. Everything else — just message us.</p>
+
+    <div class="faq-grid" id="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Do I need a boat license?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-inner">No license required. Our experienced captain drives the boat at all times. You just relax and enjoy the view. The captain knows every corner of the Bay of Kotor.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How many people can come?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-inner">Maximum 7 persons per trip. The boat is comfortable for groups of 2–6. If you have a larger group, contact us and we can discuss options.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Is fuel included in the price?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-inner">For Wedding &amp; Photoshoot bookings — fuel is fully included. For Private Charters — there is a fuel surcharge of €50 per hour on top of the base rate, making the total €500/hour.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Where exactly do we meet?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-inner">The default pickup is Kotor Riva (the main waterfront promenade). We can also arrange pickup from Perast, Porto Montenegro, Adriatica, Tivat, Porto Novi, Herceg Novi, and more. Just tell us your location when booking.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How do I confirm a booking?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-inner">Use our booking form on this page to select your date, time, and route — then send the summary via WhatsApp or Instagram DM. We confirm personally within a few hours. No automated bots, real person on the other end.</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider-rule"></div>
+
+<!-- ══════════════════════════════════
+     CTA / BOOK
+══════════════════════════════════ -->
+<section class="cta-section" id="book">
+  <div class="container">
+    <div class="cta-card">
+      <div class="section-eyebrow" style="margin-bottom:6px">Ready to Book?</div>
+      <div class="cta-title">Message us with <em>context</em></div>
+      <p class="cta-sub">The buttons below open a pre-filled message so we can answer faster — no back-and-forth needed.</p>
+
+      <div class="cta-message-preview">
+        Hi, I'd like to book on <strong>[your date]</strong> for <strong>[x] people</strong>. Interested in a <strong>[charter / photoshoot]</strong>.
+      </div>
+
+      <div class="cta-btns">
+        <a id="wa-cta-btn" href="#" class="btn btn-wa" onclick="openWA(event)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+        <a id="ig-cta-btn" href="https://ig.me/m/lola.boat.rent.montenegro" class="btn btn-ig" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Instagram DM
+        </a>
+      </div>
+      <p class="cta-note">Or use the full booking form ↑ in the Booking App to select date, time &amp; route automatically</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     MANAGER SECTION
+══════════════════════════════════ -->
+<section class="manager-section" id="manager">
+  <div class="container">
+    <div class="section-eyebrow">Manager Tools</div>
+    <h2 class="section-heading">Your <em>inbox control</em><br>system</h2>
+    <p class="section-sub">No bots. No AI agents. Just structured templates and a clear setup guide — so you reply faster and tourists send better messages.</p>
+
+    <div class="mgr-tabs">
+      <button class="mgr-tab active" onclick="showMgrTab('dm-tree')">💬 DM Decision Tree</button>
+      <button class="mgr-tab" onclick="showMgrTab('auto-reply')">⚡ Auto-Reply Setup</button>
+      <button class="mgr-tab" onclick="showMgrTab('checklist')">✅ Launch Checklist</button>
+    </div>
+
+    <!-- ─── TAB 1: DM DECISION TREE ─── -->
+    <div class="mgr-tab-content active" id="mgr-dm-tree">
+      <div class="tree-intro">
+        <strong>How this works:</strong> When a DM lands in your inbox, scan it for signals (date? number of people? just a price question?), identify the scenario, then click "Copy Reply" and paste it. One auto-reply was already sent by the platform — everything after that is you, manually. This tree is your reference, not a bot.
+      </div>
+
+      <div class="tree-grid">
+
+        <!-- Scenario 1 -->
+        <div class="scenario-card">
+          <div class="scenario-head">
+            <div class="scenario-number">Scenario 01</div>
+            <div class="scenario-title">❓ General Inquiry</div>
+            <div class="scenario-signals">
+              <span class="chip chip-fog">No date</span>
+              <span class="chip chip-fog">No group size</span>
+              <span class="chip chip-fog">"Price?"</span>
+            </div>
+          </div>
+          <div class="scenario-body">
+            <div class="scenario-label">Your reply template</div>
+            <div class="reply-template" id="tmpl-1">Hi! 🌊 Lola is available for private charters and wedding/photoshoot sessions on the Bay of Kotor.
+
+Pricing: from €400/hr (photoshoot, fuel incl.) or €500/hr (charter).
+Max 7 people. Captain always included — no license needed.
+
+To check availability, just send me:
+📅 Your date
+👥 Number of people
+⏱ How long you're thinking (half day, full day, a few hours?)</div>
+            <button class="btn-copy-reply" onclick="copyTemplate('tmpl-1', this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy Reply
+            </button>
+            <div class="handover-note"><div class="handover-dot"></div>After this reply — manual only. Wait for their answer, then confirm availability on your calendar.</div>
+          </div>
+        </div>
+
+        <!-- Scenario 2 -->
+        <div class="scenario-card">
+          <div class="scenario-head">
+            <div class="scenario-number">Scenario 02</div>
+            <div class="scenario-title">📅 Availability Check</div>
+            <div class="scenario-signals">
+              <span class="chip chip-sea">Has a date</span>
+              <span class="chip chip-fog">No group size yet</span>
+            </div>
+          </div>
+          <div class="scenario-body">
+            <div class="scenario-label">Your reply template</div>
+            <div class="reply-template" id="tmpl-2">Hi! Let me check [DATE] for you 🗓
+
+Looks good — we have availability. A few quick things to confirm:
+
+👥 How many people?
+⏱ How long? (e.g. 2 hours, half day, full day)
+🚤 Charter or photoshoot?
+
+Once I have that I'll give you the exact price and confirm the slot.</div>
+            <button class="btn-copy-reply" onclick="copyTemplate('tmpl-2', this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy Reply
+            </button>
+            <div class="handover-note"><div class="handover-dot"></div>Check your Google Calendar first. If the date is busy, say so and propose the nearest free date.</div>
+          </div>
+        </div>
+
+        <!-- Scenario 3 -->
+        <div class="scenario-card">
+          <div class="scenario-head">
+            <div class="scenario-number">Scenario 03</div>
+            <div class="scenario-title">✅ High Intent</div>
+            <div class="scenario-signals">
+              <span class="chip chip-sea">Has date</span>
+              <span class="chip chip-sea">Has group size</span>
+              <span class="chip chip-gold">Ready to book</span>
+            </div>
+          </div>
+          <div class="scenario-body">
+            <div class="scenario-label">Your reply template</div>
+            <div class="reply-template" id="tmpl-3">Hi! Great, [DATE] works for [X] people 🎉
+
+Here's your booking summary:
+📅 Date: [DATE]
+👥 People: [X]
+⏱ Duration: [HOURS] hours
+💰 Total: €[PRICE]
+📍 Pickup: [STATION] at [TIME]
+
+To confirm, just reply with ✅ and I'll lock it in on the calendar. Payment details on the day of the tour.</div>
+            <button class="btn-copy-reply" onclick="copyTemplate('tmpl-3', this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy Reply
+            </button>
+            <div class="handover-note"><div class="handover-dot"></div>Fill in the [brackets] manually before sending. Add to Google Calendar immediately after they confirm.</div>
+          </div>
+        </div>
+
+      </div><!-- /tree-grid -->
+
+      <div class="warning-box" style="margin-top:24px">
+        <div class="warning-box-title">❌ After the first auto-reply — never do this manually</div>
+        <ul class="warning-list">
+          <li>Send a second automated message</li>
+          <li>Let a bot negotiate or confirm on your behalf</li>
+          <li>Hide the price to "capture a lead"</li>
+          <li>Use typing simulation or fake delays</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── TAB 2: AUTO-REPLY SETUP ─── -->
+    <div class="mgr-tab-content" id="mgr-auto-reply">
+      <div class="tree-intro">
+        <strong>What you're setting up:</strong> A single auto-reply that fires on the <em>first message only</em> when someone DMs you on Instagram or WhatsApp Business. It gives basic info and asks for what you need. After that — 100% manual, real human replies.
+      </div>
+
+      <div class="guide-grid">
+
+        <!-- Instagram -->
+        <div class="guide-card">
+          <div class="guide-card-head">
+            <div class="guide-platform-icon">📸</div>
+            <div class="guide-platform-name">Instagram Business</div>
+          </div>
+          <div class="guide-card-body">
+            <div class="guide-steps">
+              <div class="guide-step">
+                <div class="guide-step-num">1</div>
+                <div class="guide-step-text">Open <strong>Instagram</strong> → your profile → <strong>Professional Dashboard</strong></div>
+              </div>
+              <div class="guide-step">
+                <div class="guide-step-num">2</div>
+                <div class="guide-step-text">Go to <strong>Messaging Tools</strong> → <strong>Instant Reply</strong></div>
+              </div>
+              <div class="guide-step">
+                <div class="guide-step-num">3</div>
+                <div class="guide-step-text">Toggle <strong>ON</strong> and paste the message below</div>
+              </div>
+              <div class="guide-step">
+                <div class="guide-step-num">4</div>
+                <div class="guide-step-text">Set trigger: <strong>When someone messages for the first time</strong> — leave keyword triggers empty (fires on any first message)</div>
+              </div>
+              <div class="guide-step">
+                <div class="guide-step-num">5</div>
+                <div class="guide-step-text">Save. Test by DMing yourself from a second account.</div>
+              </div>
+            </div>
+
+            <div class="auto-reply-text">
+              <div class="auto-reply-text-label">Auto-reply message to paste</div>
+              <div class="auto-reply-box" id="auto-ig">Hi! 👋 Thanks for reaching out to Lola Boat Rent Montenegro!
+
+We offer private speedboat charters and wedding/photoshoot sessions on the Bay of Kotor.
+
+🚤 Max 7 people | Captain included | No license needed
+💰 From €400/hr (photoshoot) · €500/hr (charter)
+📍 Pickup: Kotor Riva + 9 other stations
+
+To check availability, please share:
+📅 Your date
+👥 Number of people
+⏱ How many hours?
+
+We reply personally — no bots 🙂</div>
+              <button class="btn-copy-reply" style="margin-top:10px" onclick="copyTemplate('auto-ig', this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy IG Auto-Reply
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="guide-card">
+          <div class="guide-card-head">
+            <div class="guide-platform-icon">💬</div>
+            <div class="guide-platform-name">WhatsApp Business</div>
+          </div>
+          <div class="guide-card-body">
+            <div class="guide-steps">
+              <div class="guide-step">
+                <div class="guide-step-num">1</div>
+                <div class="guide-step-text">Open <strong>WhatsApp Business</strong> → <strong>Settings</strong> → <strong>Business Tools</strong></div>
+              </div>
+              <div class="guide-step">
+                <div class="guide-step-num">2</div>
+                <div class="guide-step-text">Tap <strong>Away Message</strong> OR <strong>Greeting Message</strong> (Greeting = first-time only ✅)</div>
+              </div>
+              <div class="guide-step">
+                <div class="guide-step-num">3</div>
+                <div class="guide-step-text">Enable <strong>Greeting Message</strong>, set recipient to <strong>Everyone</strong></div>
+              </div>
+              <div class="guide-step">
+                <div class="guide-step-num">4</div>
+                <div class="guide-step-text">Paste the message below. <strong>Away Message</strong> = optional, for when you're offline at night.</div>
+              </div>
+              <div class="guide-step">
+                <div class="guide-step-num">5</div>
+                <div class="guide-step-text">For keyword quick-replies: <strong>Quick Replies</strong> → add shortcuts like <code>/price</code> <code>/avail</code></div>
+              </div>
+            </div>
+
+            <div class="auto-reply-text">
+              <div class="auto-reply-text-label">Greeting message to paste</div>
+              <div class="auto-reply-box" id="auto-wa">Hi! 👋 Welcome to Lola Boat Rent Montenegro!
+
+We offer private speedboat tours on the Bay of Kotor.
+
+🚤 Max 7 people | Captain always included
+💰 €400/hr photoshoot (fuel incl.) | €500/hr charter
+📍 Kotor Riva + other stations
+
+To check availability, send us:
+📅 Date you want
+👥 How many people
+⏱ Duration (hours or half/full day)
+
+We'll confirm personally within a few hours ⛵</div>
+              <button class="btn-copy-reply" style="margin-top:10px" onclick="copyTemplate('auto-wa', this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy WA Auto-Reply
+              </button>
+
+              <div class="auto-reply-text-label" style="margin-top:18px">Keyword Quick Replies (WhatsApp)</div>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+                <div>
+                  <div style="font-size:10px;color:var(--fog);margin-bottom:3px">Shortcut: <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:2px;color:var(--gold2);font-family:monospace">/price</code></div>
+                  <div class="auto-reply-box" id="qr-price" style="font-size:11px;padding:10px">Wedding/Photoshoot: €400/hr (fuel incl.)
+Private Charter: €450/hr + €50 fuel = €500/hr total
+Captain always included. Max 7 people.</div>
+                  <button class="btn-copy-reply btn-sm" style="margin-top:6px" onclick="copyTemplate('qr-price', this)">Copy /price reply</button>
+                </div>
+                <div style="margin-top:6px">
+                  <div style="font-size:10px;color:var(--fog);margin-bottom:3px">Shortcut: <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:2px;color:var(--gold2);font-family:monospace">/avail</code></div>
+                  <div class="auto-reply-box" id="qr-avail" style="font-size:11px;padding:10px">To check availability, send me:
+📅 Your date
+👥 Number of people
+⏱ Duration (hours)</div>
+                  <button class="btn-copy-reply btn-sm" style="margin-top:6px" onclick="copyTemplate('qr-avail', this)">Copy /avail reply</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /guide-grid -->
+
+      <div class="keyword-tags" style="margin-top:20px">
+        <div style="font-size:10px;color:var(--fog);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-right:4px;align-self:center">Common trigger keywords:</div>
+        <span class="kwt">price</span>
+        <span class="kwt">how much</span>
+        <span class="kwt">cost</span>
+        <span class="kwt">available</span>
+        <span class="kwt">availability</span>
+        <span class="kwt">boat</span>
+        <span class="kwt">charter</span>
+        <span class="kwt">book</span>
+        <span class="kwt">tomorrow</span>
+        <span class="kwt">hello</span>
+        <span class="kwt">hi</span>
+      </div>
+    </div>
+
+    <!-- ─── TAB 3: LAUNCH CHECKLIST ─── -->
+    <div class="mgr-tab-content" id="mgr-checklist">
+
+      <div class="checklist-grid">
+        <div class="checklist-card">
+          <div class="checklist-card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .82h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            Instagram Setup
+          </div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Switch to Professional / Business account</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Enable Instant Reply in Messaging Tools</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Paste auto-reply message (see Tab 2)</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Test from a second account</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Add 3 quick-reply templates to Saved Replies</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Pin bio link to booking form or this page</div>
+        </div>
+
+        <div class="checklist-card">
+          <div class="checklist-card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            WhatsApp Setup
+          </div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Use WhatsApp Business (not regular WA)</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Enable Greeting Message → paste text</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Set Away Message for off-hours</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Add /price and /avail Quick Replies</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Set business hours in Profile</div>
+          <div class="checklist-item"><span class="ci-check">✓</span>Test greeting from a different number</div>
+        </div>
+
+        <div class="checklist-card">
+          <div class="checklist-card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Daily Workflow
+          </div>
+          <div class="checklist-item"><span class="ci-check">→</span>DM arrives → read for date/people/intent</div>
+          <div class="checklist-item"><span class="ci-check">→</span>Match to scenario (01, 02, or 03)</div>
+          <div class="checklist-item"><span class="ci-check">→</span>Copy template, fill [brackets], send</div>
+          <div class="checklist-item"><span class="ci-check">→</span>Check Google Calendar before confirming</div>
+          <div class="checklist-item"><span class="ci-check">→</span>Add confirmed booking to calendar immediately</div>
+          <div class="checklist-item"><span class="ci-check">→</span>Never send a second automated message</div>
+        </div>
+      </div>
+
+      <div class="warning-box" style="margin-top:20px">
+        <div class="warning-box-title">❌ What this system intentionally does NOT do</div>
+        <ul class="warning-list">
+          <li>No AI chatbot that negotiates prices or confirms bookings</li>
+          <li>No multi-step automated sequences ("drip DMs")</li>
+          <li>No lead capture forms that hide the price</li>
+          <li>No fake "typing..." delays or humanization tricks</li>
+          <li>No third-party tools required — only native IG + WA Business features</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div><!-- /container -->
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-text">⚓ Lola Boat Rent Montenegro · Bay of Kotor · <a href="https://wa.me/38267020929">+382 67 020 929</a> · <a href="https://ig.me/m/lola.boat.rent.montenegro">@lola.boat.rent.montenegro</a></p>
+</footer>
+
+<script>
+// ── FAQ ──────────────────────────────────
+function toggleFaq(btn) {
+  var item = btn.closest('.faq-item');
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── MGR TABS ──────────────────────────────
+function showMgrTab(name) {
+  document.querySelectorAll('.mgr-tab-content').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('mgr-' + name).classList.add('active');
+  document.querySelectorAll('.mgr-tab').forEach(function(t){ t.classList.remove('active'); });
+  var tabs = ['dm-tree','auto-reply','checklist'];
+  document.querySelectorAll('.mgr-tab')[tabs.indexOf(name)].classList.add('active');
+}
+
+// ── COPY TO CLIPBOARD ──────────────────────
+function copyTemplate(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text.trim()).then(function() {
+    showToast('✓ Copied to clipboard');
+    btn.classList.add('copied');
+    var orig = btn.innerHTML;
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = orig; }, 2200);
+  }).catch(function(){
+    // fallback
+    var ta = document.createElement('textarea');
+    ta.value = text.trim(); ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✓ Copied!');
+  });
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2400);
+}
+
+// ── CTA PREFILLED LINKS ───────────────────
+var WA_NUMBER = '38267020929';
+var PREFILLED = 'Hi, I\'d like to book a tour on [DATE] for [X] people. Interested in a [charter / photoshoot].';
+
+function openWA(e) {
+  e.preventDefault();
+  window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(PREFILLED), '_blank');
+}
+
+// nav active state on scroll
+var sections = ['pricing','faq','book','manager'];
+window.addEventListener('scroll', function(){
+  var scrollY = window.scrollY + 80;
+  sections.forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    if(scrollY >= el.offsetTop && scrollY < el.offsetTop + el.offsetHeight){
+      document.querySelectorAll('.nav-links a').forEach(function(a){ a.classList.remove('active'); });
+      var link = document.querySelector('.nav-links a[href="#'+id+'"]');
+      if(link) link.classList.add('active');
+    }
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
